@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
             $table->timestamp('updated_real')->useCurrent();
             $table->timestamp('offsale_at')->nullable();
-            $table->integer('stock_limit')->nullable();
+            $table->integer('stock_limit')->default('0');
             $table->bigInteger('cash')->default(0);
             $table->bigInteger('coins')->default(0);
             $table->bigInteger('sales')->default(1);

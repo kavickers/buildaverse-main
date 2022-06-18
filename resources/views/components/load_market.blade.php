@@ -6,8 +6,8 @@
                 @if($item->special) <div class="collectible-badge"></div> @endif
                 @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) <div class="timed-badge"></div> @endif
                 <a href="{{ route('market.item', $item->id) }}">
-                    <img src="{{ $item->get_render() }}" class="img-fluid item-preview d-none d-md-block @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) is-timed @endif" />
-                    <img src="{{ $item->get_render() }}" class="item-preview d-block d-md-none @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) is-timed @endif" width="128" />
+                    <img src="{{ $item->get_render() }}" class="img-fluid item-preview @if($item->type == 2) bg-white @endif d-none d-md-block @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) is-timed @endif" />
+                    <img src="{{ $item->get_render() }}" class="item-preview @if($item->type == 2) bg-white @endif d-block d-md-none @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) is-timed @endif" width="128" />
                 </a>
                 <div class="px-3 py-2 min-w-0">
                     <a href="{{ route('market.item', $item->id) }}" class="text-xl fw-semibold text-light d-block truncate">

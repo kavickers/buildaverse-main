@@ -7,7 +7,7 @@
                 <div class="position-relative overflow-hidden rounded">
                     @if($item->special) <div class="collectible-badge"></div> @endif
                     @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) <div class="timed-badge"></div> @endif
-                    <img src="{{ $item->get_render() }}" class="img-fluid item-preview @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) is-timed @endif" />
+                    <img src="{{ $item->get_render() }}" class="img-fluid item-preview @if($item->type == 2) bg-white @endif  @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) is-timed @endif" />
                 </div>
             </div>
             <div class="col-md-7">
@@ -134,8 +134,7 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
                             <li>
-									<span
-                                        class="text-center dropdown-item-text notification-dropdown-title p-0">More</span>
+									<span class="text-center dropdown-item-text notification-dropdown-title p-0">More</span>
                             </li>
                             <li>
                                 <hr class="dropdown-divider mb-1" />
@@ -144,8 +143,7 @@
                                 <a class="dropdown-item text-danger" href="#">Report</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" role="button" data-bs-toggle="modal"
-                                   data-bs-target="#sellModal">Sell</a>
+                                <a class="dropdown-item" role="button" data-bs-toggle="modal" data-bs-target="#sellModal">Sell</a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="#">Delete from Inventory</a>
@@ -160,8 +158,7 @@
                                     <h4 class="modal-title" id="exampleModalLabel">
                                         Sell Collectible
                                     </h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <label class="text-muted text-uppercase text-sm fw-bold mb-1">WHICH SERIAL TO
@@ -195,15 +192,14 @@
                 <div class="text-sm text-muted fw-bold text-uppercase">
                     STATISITCS
                 </div>
-                <div><span class="fw-semibold">Created:</span> June 10th, 2022</div>
-                <div><span class="fw-semibold">Updated:</span> 2 hours ago</div>
-                <div><span class="fw-semibold">Sold:</span> 12</div>
+                <div><span class="fw-semibold">Created:</span> {{ Carbon\Carbon::parse($item->created_at)->format('F d, Y') }}</div>
+                <div><span class="fw-semibold">Updated:</span> {{ $item->updated_real->diffForHumans() }}</div>
+                <div><span class="fw-semibold">Sold:</span> {{ $item->get_short_price($item->sold()) }}</div>
                 <div class="text-sm text-muted fw-bold text-uppercase mt-3">
                     DESCRIPTION
                 </div>
                 <div>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                    eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    {!! nl2br(e($item->desc)) !!}
                 </div>
             </div>
         </div>

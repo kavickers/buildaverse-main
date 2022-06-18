@@ -201,9 +201,15 @@ class User extends Authenticatable
 
     public function get_avatar()
     {
-        //$url = "https://cdn.buildaverse.com/". $this->avatar_url . ".png";
-        $url = "/static/img/avatar.png";
-        return $url;
+        if($this->hasOne(Avatar::class)->exists())
+        {
+            $url = "https://cdn.buildaverse.net/". $this->avatar_url . ".png";
+            return $url;
+        } else {
+            Avatar::create(['user_id' => $this->id]);
+            $url = "https://cdn.buildaverse.net/". $this->avatar_url . ".png";
+            return $url;
+        }
     }
 
     public function get_short_num($num) {

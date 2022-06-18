@@ -76,14 +76,14 @@ class AvatarsController extends Controller
             $llegcolor = $avatar->hex_lleg;
             $rlegcolor = $avatar->hex_rleg;
             $randomHash = bin2hex(random_bytes(32));
-            $output = "/var/www/cdn.bloxcity.com/".$randomHash.".png";
+            $output = "/var/www/cdn/".$randomHash.".png";
 
             //begin setting up the command
             $items = escapeshellarg($hat1)." ".escapeshellarg($hat2)." ".escapeshellarg($hat3)." ".escapeshellarg($tool);
             $colors =  escapeshellarg($rlegcolor)." ".escapeshellarg($llegcolor)." ".escapeshellarg($rarmcolor)." ".escapeshellarg($larmcolor)." ".escapeshellarg($headcolor)." ".escapeshellarg($torsocolor);
             $args = $colors." ".escapeshellarg($output)." ".escapeshellarg($shirt)." ".escapeshellarg($pants)." ".escapeshellarg($face)." ".escapeshellarg($istool_int)." ".$items;
             //build the final command
-            $cmd = "blender -b -noaudio -P /var/www/assets.bloxcity.com/render.py -- default ".$args;
+            $cmd = "blender -b -noaudio -P /var/www/storage/render.py -- default ".$args;
 
             if($debug)
             {

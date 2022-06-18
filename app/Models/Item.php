@@ -66,13 +66,16 @@ class Item extends Model
         } elseif($this->approved == 2) {
             return asset('img/market/denied.png');
         } else {
-            //return $this->hash;
-            return asset('img/market/place-2.png');
+            return "https://cdn.buildaverse.net/".$this->hash.".png";
         }
     }
 
     public function stock()
     {
+        if($this->special == 0)
+        {
+            return -1;
+        }
         if($this->latest_copy() != null)
         {
             return $this->latest_copy()->collection_number - 1;
