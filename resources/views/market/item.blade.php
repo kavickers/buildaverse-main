@@ -6,8 +6,8 @@
             <div class="col-md-5 mb-4 mb-md-0">
                 <div class="position-relative overflow-hidden rounded">
                     @if($item->special) <div class="collectible-badge"></div> @endif
-                    @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) <div class="timed-badge"></div> @endif
-                    <img src="{{ $item->get_render() }}" class="img-fluid item-preview @if($item->type == 2) bg-white @endif  @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1) is-timed @endif" />
+                    @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && (($item->cash > 0 && $item->coins > 0) || ($item->coins == -1 && $item->cash == -1))) <div class="timed-badge"></div> @endif
+                    <img src="{{ $item->get_render() }}" class="img-fluid item-preview @if($item->type == 2) bg-white @endif  @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && (($item->cash > 0 && $item->coins > 0) || ($item->coins == -1 && $item->cash == -1))) is-timed @endif" />
                 </div>
             </div>
             <div class="col-md-7">
@@ -25,106 +25,177 @@
                             @auth
                                 @if(!auth()->user()->owns($item) && $item->stock() < $item->stock_limit)
                                     @if($item->cash > 0)
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#cashModal"
-                                                class="btn btn-success d-none d-lg-inline-block btn-lg fw-semibold">
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#cashModal" class="btn btn-success d-none d-lg-inline-block btn-lg fw-semibold">
                                             <i class="bi bi-cash-stack text-2xl align-middle me-2 lh-1"></i>{{ $item->get_short_price($item->cash) }} Cash
                                         </button>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#cashModal"
-                                                class="btn btn-success d-block w-100 d-lg-none text-center btn-lg fw-semibold mb-2">
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#cashModal" class="btn btn-success d-block w-100 d-lg-none text-center btn-lg fw-semibold mb-2">
                                             <i class="bi bi-cash-stack text-2xl align-middle me-2 lh-1"></i>{{ $item->get_short_price($item->cash) }} Cash
                                         </button>
+
+                                        <!-- cash modal -->
+                                        <div class="modal fade" id="cashModal" tabindex="-1" aria-labelledby="cashModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                @if(auth()->user()->cash >= $item->cash)
+                                                    <div class="modal-header border-bottom-0 pb-0">
+                                                        <h4 class="modal-title" id="cashModalLabel">
+                                                            Confirm Purchase
+                                                        </h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Are you sure you want to buy
+                                                        <span class="fw-semibold">{{ $item->name }}</span>
+                                                        for
+                                                        <span class="text-success fw-semibold"><i class="bi bi-cash-stack align-middle text-lg me-1"></i>{{ number_format($item->cash) }}</span>?
+                                                    </div>
+                                                    <div class="modal-footer border-top-0 pt-0">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            Cancel
+                                                        </button>
+                                                        <form method="POST" action="{{ route('market.item.buy', [$item->id, '1']) }}">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-success">
+                                                                Buy Now
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                @else
+                                                    <div class="modal-header border-bottom-0 pb-0">
+                                                        <h4 class="modal-title" id="cashModalLabel">
+                                                            Confirm Purchase
+                                                        </h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        You need
+                                                        <span class="text-success fw-semibold"><i class="bi bi-cash-stack align-middle text-lg me-1"></i>{{ $item->cash - auth()->user()->cash }}</span> to purchase this item.
+                                                    </div>
+                                                    <div class="modal-footer border-top-0 pt-0">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            Cancel
+                                                        </button>
+                                                        <button type="button" class="btn btn-success">
+                                                            Buy Cash
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end cash modal -->
                                     @endif
                                     @if($item->coins > 0)
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#coinModal"
-                                                class="btn btn-warning d-none d-lg-inline-block btn-lg fw-semibold">
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#coinModal" class="btn btn-warning d-none d-lg-inline-block btn-lg fw-semibold">
                                             <i class="bi bi-coin text-2xl align-middle me-2 lh-1"></i>{{ $item->get_short_price($item->coins) }} Coins
                                         </button>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#coinModal"
-                                                class="btn btn-warning d-block w-100 d-lg-none text-center btn-lg fw-semibold mb-2">
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#coinModal" class="btn btn-warning d-block w-100 d-lg-none text-center btn-lg fw-semibold mb-2">
                                             <i class="bi bi-coin text-2xl align-middle me-2 lh-1"></i>{{ $item->get_short_price($item->coins) }} Coins
                                         </button>
+
+                                        <!-- coins modal -->
+                                        <div class="modal fade" id="coinModal" tabindex="-1" aria-labelledby="coinsModalLabel"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                @if(auth()->user()->coins >= $item->coins)
+                                                    <div class="modal-header border-bottom-0 pb-0">
+                                                        <h4 class="modal-title" id="coinsModalLabel">
+                                                            Confirm Purchase
+                                                        </h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Are you sure you want to buy
+                                                        <span class="fw-semibold">{{ $item->name }}</span>
+                                                        for
+                                                        <span class="text-warning fw-semibold"><i class="bi bi-coin align-middle text-lg me-1"></i>{{ number_format($item->coins) }}</span>?
+                                                    </div>
+                                                    <div class="modal-footer border-top-0 pt-0">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            Cancel
+                                                        </button>
+                                                        <form method="POST" action="{{ route('market.item.buy', [$item->id, '2']) }}">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-warning">
+                                                                Buy Now
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                @else
+                                                    <div class="modal-header border-bottom-0 pb-0">
+                                                        <h4 class="modal-title" id="coinsModalLabel">
+                                                            Insufficient Funds
+                                                        </h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        You need
+                                                        <span class="text-warning fw-semibold"><i class="bi bi-coin align-middle text-lg me-1"></i>{{ $item->coins - auth()->user()->coins }}</span> to purchase this item.
+                                                    </div>
+                                                    <div class="modal-footer border-top-0 pt-0">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            Cancel
+                                                        </button>
+                                                        <button type="button" class="btn btn-warning">
+                                                            Buy Coins
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end coins modal -->
                                     @endif
                                     @if($item->free())
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#coinModal"
-                                                    class="btn btn-warning d-none d-lg-inline-block btn-lg fw-semibold">
-                                            <i class="bi bi-coin text-2xl align-middle me-2 lh-1"></i>{{ $item->get_short_price($item->coins) }} Coins
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#freeModal" class="btn btn-info d-none d-lg-inline-block btn-lg fw-semibold">
+                                            Free
                                         </button>
-                                        <button type="button" data-bs-toggle="modal" data-bs-target="#coinModal"
-                                                    class="btn btn-warning d-block w-100 d-lg-none text-center btn-lg fw-semibold mb-2">
-                                            <i class="bi bi-coin text-2xl align-middle me-2 lh-1"></i>{{ $item->get_short_price($item->coins) }} Coins
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#freeModal" class="btn btn-info d-block w-100 d-lg-none text-center btn-lg fw-semibold mb-2">
+                                            Free
                                         </button>
+
+                                        <!-- free modal -->
+                                        <div class="modal fade" id="freeModal" tabindex="-1" aria-labelledby="freeModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header border-bottom-0 pb-0">
+                                                        <h4 class="modal-title" id="freeModalLabel">
+                                                            Confirm Purchase
+                                                        </h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Are you sure you want to buy
+                                                        <span class="fw-semibold">{{ $item->name }}</span>
+                                                        for
+                                                        <span class="text-info fw-semibold">free</span>?
+                                                    </div>
+                                                    <div class="modal-footer border-top-0 pt-0">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            Cancel
+                                                        </button>
+                                                        <form method="POST" action="{{ route('market.item.buy', [$item->id, '3']) }}">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-info">
+                                                                Buy Now
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end free modal -->
                                     @endif
                                 @endif
                             @endauth
-                            <!-- modal -->
-                            <div class="modal fade" id="cashModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header border-bottom-0 pb-0">
-                                            <h4 class="modal-title" id="exampleModalLabel">
-                                                Confirm Purchase
-                                            </h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to buy
-                                            <span class="fw-semibold">Crystalline Faberge Egg</span>
-                                            for
-                                            <span class="text-success fw-semibold"><i
-                                                    class="bi bi-cash-stack align-middle text-lg me-1"></i>
-													10,000</span>
-                                        </div>
-                                        <div class="modal-footer border-top-0 pt-0">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Cancel
-                                            </button>
-                                            <button type="button" class="btn btn-success">
-                                                Buy Now
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end modal -->
 
-                            <!-- modal -->
-                            <div class="modal fade" id="coinModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header border-bottom-0 pb-0">
-                                            <h4 class="modal-title" id="exampleModalLabel">
-                                                Confirm Purchase
-                                            </h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to buy
-                                            <span class="fw-semibold">Crystalline Faberge Egg</span>
-                                            for
-                                            <span class="text-warning fw-semibold"><i
-                                                    class="bi bi-coin align-middle text-lg me-1"></i>
-													10,000</span>
-                                        </div>
-                                        <div class="modal-footer border-top-0 pt-0">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Cancel
-                                            </button>
-                                            <button type="button" class="btn btn-warning">
-                                                Buy Now
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end modal -->
                             @if($item->cash == 0 && $item->coins == 0)<span class="d-block mt-md-2 ms-2 text-danger align-middle">Offsale</span>@endif
                             @if($item->special && $item->stock() >= $item->stock_limit)<span class="d-block mt-md-2 ms-2 text-danger align-middle">Out of stock</span>@endif
                             @if($item->special && $item->stock() < $item->stock_limit)<span class="d-block mt-md-2 ms-2 text-danger align-middle">{{ $item->stock() }} Remaining</span>@endif
-                            @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && $item->cash > 0 || $item->cash == -1 && $item->coins > 0 || $item->coins == -1)<span class="d-block mt-md-2 ms-2 text-danger align-middle">Offsale in {{ $item->offsale_at->diffForHumans(null, true, true) }}</span>@endif
+                            @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && (($item->cash > 0 && $item->coins > 0) || ($item->coins == -1 && $item->cash == -1)))<span class="d-block mt-md-2 ms-2 text-danger align-middle">Offsale in {{ $item->offsale_at->diffForHumans(null, true, true) }}</span>@endif
                         </div>
                     </div>
                     <div class="dropdown">

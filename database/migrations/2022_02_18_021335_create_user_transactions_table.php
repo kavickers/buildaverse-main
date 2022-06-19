@@ -22,6 +22,8 @@ return new class extends Migration
             $table->bigInteger('coins')->nullable();
             $table->integer('type');
             $table->timestamps();
+            $table->timestamp('release_at')->nullable();
+            $table->tinyInteger('released')->default('0');
         });
     }
 

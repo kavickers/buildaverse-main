@@ -15,6 +15,7 @@ class Avatar extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',
         'tshirt_id',
         'shirt_id',
         'pants_id',

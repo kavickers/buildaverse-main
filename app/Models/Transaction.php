@@ -18,7 +18,18 @@ class Transaction extends Model
         'type',
         'cash',
         'coins',
+        'release_at'
     ];
+
+    protected $dates = [
+        'created_at',
+        'updated_at',
+    ];
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     /**
      *
@@ -32,7 +43,8 @@ class Transaction extends Model
      * Source types
      * 1 = Item
      * 2 = Guild
-     * 3 = Game
+     * 3 = World
+     * 4 = System
      *
      */
 }

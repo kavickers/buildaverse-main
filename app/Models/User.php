@@ -89,7 +89,7 @@ class User extends Authenticatable
 
     public function items()
     {
-        $this->hasMany(Item::class);
+        $this->hasMany(Item::class, 'creator_id');
     }
 
     public function comments()
@@ -106,6 +106,16 @@ class User extends Authenticatable
             Privacy::create(['user_id' => $this->id]);
             return $this->hasOne(Privacy::class);
         }
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'user_id');
+    }
+
+    public function released_transactions()
+    {
+        return $this->hasMany(Transaction::class, 'user_id')->where('release_at', '<', Carbon::now()->subDay())->where('released', '=', 0);
     }
 
     public function threads()
@@ -212,6 +222,11 @@ class User extends Authenticatable
         }
     }
 
+    public function avatar()
+    {
+        return $this->hasOne(Avatar::class, 'user_id');
+    }
+
     public function get_short_num($num) {
         if ($num < 999) {
             return $num;
@@ -258,6 +273,22 @@ class User extends Authenticatable
             }
         }
         return $membership;
+    }
+
+    public function membership()
+    {
+        if($this->membership_expires != null)
+        {
+            if(!Carbon::parse($this->membership_expires)->isPast())
+            {
+                return true;
+            } else {
+                $this->update(['membership' => 0]);
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public function guilds()

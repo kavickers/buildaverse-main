@@ -13,5 +13,6 @@ class Inventory extends Model
         'user_id',
         'item_id',
         'type',
+        'collection_number',
     ];
 }

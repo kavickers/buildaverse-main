@@ -29,6 +29,8 @@ return new class extends Migration
             $table->char('hex_rarm')->default('FAF123');
             $table->char('hex_lleg')->default('FAF123');
             $table->char('hex_rleg')->default('FAF123');
+            $table->tinyInteger('avatar')->default(1);
+            $table->tinyInteger('orient')->default(1);
             $table->timestamps();
         });
     }

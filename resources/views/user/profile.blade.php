@@ -5,7 +5,7 @@
         <div class="col-12 d-block d-lg-none">
             <h1>{{ $user->username }} <i class="@if($user->isOnline()) text-success @else text-muted @endif bi bi-circle-fill text-sm align-middle mx-1" title="@if($user->isOnline()) Last seen now @else Last seen {{ $user->last_online->diffForHumans() }} @endif"></i></h1>
             <div class="card mb-4 text-center">
-                <img class="card-img-top w-50 mx-auto my-4 my-lg-0" src="/img/avatar/human.png">
+                <img class="card-img-top w-50 mx-auto my-4 my-lg-0" src="{{ $user->get_avatar() }}">
             </div>
         </div>
 
@@ -13,7 +13,7 @@
             <div class="d-none d-lg-block">
                 <h4>Avatar</h4>
                 <div class="card mb-4">
-                    <img class="card-img-top p-4" src="/img/avatar/human.png">
+                    <img class="card-img-top p-4" src="{{ $user->get_avatar() }}">
                     <div class="card-body">
                         <div class="row">
 

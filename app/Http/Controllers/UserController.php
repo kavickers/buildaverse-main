@@ -92,7 +92,7 @@ class UserController extends Controller
 
     public function add_friend(User $user)
     {
-        if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(5)))
+        if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
         {
             return back()->with('error', 'You\'re doing that too fast!');
         }

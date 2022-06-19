@@ -45,12 +45,12 @@ class Item extends Model
 
     public function copies()
     {
-        return $this->hasMany(Inventory::class, 'item_id')->where('collection_number', '>', '0');
+        return $this->hasMany(Inventory::class, 'item_id');
     }
 
     public function latest_copy()
     {
-        return $this->hasOne(Inventory::class, 'item_id')->where('collection_number', '>', '0')->latest()->first();
+        return $this->hasOne(Inventory::class, 'item_id')->latest()->first();
     }
 
     public function sold()
@@ -78,7 +78,7 @@ class Item extends Model
         }
         if($this->latest_copy() != null)
         {
-            return $this->latest_copy()->collection_number - 1;
+            return $this->stock_limit - $this->copies()->count();
         } else {
             return $this->stock_limit;
         }

@@ -187,9 +187,9 @@ class ForumController extends Controller
             return abort(403);
         }
 
-        if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(30)))
+        if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(env('FLOOD_GATE'))))
         {
-            return back()->withInput()->with('error', 'Please wait 30 seconds before making another post.');
+            return back()->withInput()->with('error', 'Please wait '. env('FLOOD_GATE') . ' seconds before making another post.');
         }
 
         $this->validate($request, [
@@ -373,9 +373,9 @@ class ForumController extends Controller
             return abort('404');
         }
 
-        if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds('30')))
+        if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(env('FLOOD_GATE'))))
         {
-            return back()->withInput()->with('error', 'Please wait 30 seconds before making another post.');
+            return back()->withInput()->with('error', 'Please wait '. env('FLOOD_GATE') . ' seconds before making another post.');
         }
 
         $this->validate($request, [
@@ -456,9 +456,9 @@ class ForumController extends Controller
             return abort('403');
         }
 
-        if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds('30')))
+        if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(env('FLOOD_GATE'))))
         {
-            return back()->withInput()->with('error', 'Please wait 30 seconds before making another post.');
+            return back()->withInput()->with('error', 'Please wait '. env('FLOOD_GATE') . ' seconds before making another post.');
         }
 
         $this->validate($request, [

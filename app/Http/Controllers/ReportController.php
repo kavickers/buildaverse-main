@@ -11,6 +11,7 @@ use App\Models\Report;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
@@ -131,6 +132,11 @@ class ReportController extends Controller
 
     public function submit(Request $request)
     {
+        if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
+        {
+            return back()->with('error', 'You\'re doing that too fast!');
+        }
+
         $rules = array(
             "Spam",
             "Excessive Profanity",
@@ -159,6 +165,10 @@ class ReportController extends Controller
             'rule' => $request['rule'],
         ]);
 
-        return redirect('/');
+        $flood = auth()->user();
+        $flood->action_flood_gate = Carbon::now();
+        $flood->save();
+
+        return redirect(route('dashboard'))->with('success', 'You have successfully submitted a report.');
     }
 }

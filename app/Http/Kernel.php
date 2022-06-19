@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\transactionHold;
 use App\Http\Middleware\UpdateOnlineStatus;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
