@@ -78,7 +78,7 @@ class AvatarsController extends Controller
             if(Item::find($avatar->shirt_id)) {
                 $shirt_id = Item::find($avatar->shirt_id)->source;
             } else {
-                $shirt_id = 0;
+                $shirt_id = 0; 
             }
             if(Item::find($avatar->pants_id)) { 
                 $pants_id = Item::find($avatar->pants_id)->source;
