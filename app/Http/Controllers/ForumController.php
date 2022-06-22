@@ -194,8 +194,8 @@ class ForumController extends Controller
 
         $this->validate($request, [
             'topic' => ['required'],
-            'title' => ['required', 'max:50', 'min:3', 'alpha_dash'],
-            'body' => ['required', 'max:3000', 'min:3', 'alpha_dash'],
+            'title' => ['required', 'max:50', 'min:3', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i'],
+            'body' => ['required', 'max:3000', 'min:3', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i'],
         ]);
 
         $topic = Topic::where('id', '=', request('topic'))->get()->first();
@@ -379,7 +379,7 @@ class ForumController extends Controller
         }
 
         $this->validate($request, [
-            'body' => ['required', 'max:3000', 'min:3', 'alpha_dash']
+            'body' => ['required', 'max:3000', 'min:3', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i']
         ]);
 
         if($thread->exists)
@@ -462,7 +462,7 @@ class ForumController extends Controller
         }
 
         $this->validate($request, [
-            'body' => ['required', 'max:3000', 'min:3', 'alpha_dash']
+            'body' => ['required', 'max:3000', 'min:3', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i']
         ]);
 
         if($thread->exists)

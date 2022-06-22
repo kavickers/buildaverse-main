@@ -112,7 +112,7 @@ class Item extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'target_id')->where('scrubbed', '=', '0');
+        return $this->hasMany(Comment::class, 'target_id')->where('type', '=', '1')->where('scrubbed', '=', '0');
     }
 
     public function free()

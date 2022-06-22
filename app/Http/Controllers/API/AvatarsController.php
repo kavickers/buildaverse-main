@@ -70,7 +70,7 @@ class AvatarsController extends Controller
             }
 
             //debug mode
-            $debug = true;
+            $debug = false;
             //retrieve the user's avatar
             $avatar = $user->avatar;
             
@@ -133,11 +133,11 @@ class AvatarsController extends Controller
             $colors =  escapeshellarg($rlegcolor)." ".escapeshellarg($llegcolor)." ".escapeshellarg($rarmcolor)." ".escapeshellarg($larmcolor)." ".escapeshellarg($headcolor)." ".escapeshellarg($torsocolor);
             $args = $colors." ".escapeshellarg($output)." ".escapeshellarg($shirt)." ".escapeshellarg($pants)." ".escapeshellarg($face)." ".escapeshellarg($istool_int)." ".$items;
             //build the final command
-            $cmd = "blender -b -noaudio -P /var/www/storage/render.py -- default ".$args;
+            $cmd = "/var/www/blender/blender -b -noaudio -P /var/www/storage/render.py -- default ".$args;
 
             if($debug)
             {
-                echo system($cmd) . "<br>".$cmd."<br>";
+                echo system($cmd, $output) . "<br>".$cmd."<br>".$output;
                 $user->avatar_url = $randomHash;
                 $user->avatar_render = Carbon::now();
                 $user->save();
@@ -170,7 +170,7 @@ class AvatarsController extends Controller
         if($item->exists())
         {
             //debug mode
-            $debug = true;
+            $debug = false;
             //begin setting variables to configure render command
             if($item->type == 1)
             {
@@ -218,7 +218,7 @@ class AvatarsController extends Controller
             }
             $hat2 = "/var/www/storage/hats/0.obj";
             $hat3 = "/var/www/storage/hats/0.obj";
-            if($item->type != 0) { $istool_int = 1; } else { $istool_int = 0; }
+            if($item->type == 3) { $istool_int = 1; } else { $istool_int = 0; }
             $headcolor = '999999';
             $torsocolor = '999999';
             $larmcolor = '999999';
@@ -233,7 +233,7 @@ class AvatarsController extends Controller
             $colors =  escapeshellarg($rlegcolor)." ".escapeshellarg($llegcolor)." ".escapeshellarg($rarmcolor)." ".escapeshellarg($larmcolor)." ".escapeshellarg($headcolor)." ".escapeshellarg($torsocolor);
             $args = $colors." ".escapeshellarg($output)." ".escapeshellarg($shirt)." ".escapeshellarg($pants)." ".escapeshellarg($face)." ".escapeshellarg($istool_int)." ".$items;
             //build the final command
-            $cmd = "blender -b -noaudio -P /var/www/storage/render.py -- default ".$args;
+            $cmd = "/var/www/blender/blender -b -noaudio -P /var/www/storage/render.py -- default ".$args;
 
             if($debug)
             {

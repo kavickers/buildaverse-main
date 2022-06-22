@@ -7,7 +7,7 @@
                 <div class="position-relative overflow-hidden rounded">
                     @if($item->special) <div class="collectible-badge"></div> @endif
                     @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && (($item->cash > 0 && $item->coins > 0) || ($item->coins == -1 && $item->cash == -1))) <div class="timed-badge"></div> @endif
-                    <img src="{{ $item->get_render() }}" class="img-fluid item-preview @if($item->type == 2) bg-white @endif  @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && (($item->cash > 0 && $item->coins > 0) || ($item->coins == -1 && $item->cash == -1))) is-timed @endif" />
+                    <img src="{{ $item->get_render() }}" class="img-fluid p-2 item-preview @if($item->special) is-collectible @endif @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && (($item->cash > 0 && $item->coins > 0) || ($item->coins == -1 && $item->cash == -1))) is-timed @endif" />
                 </div>
             </div>
             <div class="col-md-7">
@@ -198,6 +198,7 @@
                             @if($item->offsale_at != null && $item->special == 0 && !$item->offsale_at->isPast() && (($item->cash > 0 && $item->coins > 0) || ($item->coins == -1 && $item->cash == -1)))<span class="d-block mt-md-2 ms-2 text-danger align-middle">Offsale in {{ $item->offsale_at->diffForHumans(null, true, true) }}</span>@endif
                         </div>
                     </div>
+                    @auth
                     <div class="dropdown">
                         <button class="text-xl bg-transparent border-0 p-0 text-light" type="button"
                                 id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -211,16 +212,22 @@
                                 <hr class="dropdown-divider mb-1" />
                             </li>
                             <li>
-                                <a class="dropdown-item text-danger" href="#">Report</a>
+                                <a class="dropdown-item text-danger" href="{{ route('report.item', $item->id) }}">Report</a>
                             </li>
+                            @if($item->special > 0)
                             <li>
                                 <a class="dropdown-item" role="button" data-bs-toggle="modal" data-bs-target="#sellModal">Sell</a>
                             </li>
+                            @endif
+                            @if(auth()->user()->owns($item) && $item->special == 0)
                             <li>
                                 <a class="dropdown-item" href="#">Delete from Inventory</a>
                             </li>
+                            @endif
                         </ul>
                     </div>
+
+                    <!-- begin collectible sell modal -->
                     <div class="modal fade" id="sellModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                          aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
@@ -258,6 +265,8 @@
                             </div>
                         </div>
                     </div>
+                    <!-- end collectible modal -->
+                    @endauth
                 </div>
                 <hr />
                 <div class="text-sm text-muted fw-bold text-uppercase">
@@ -275,8 +284,14 @@
             </div>
         </div>
     </div>
+
+    @if($item->special > 0)
+    <!-- begin price chart -->
     <h3>Price Chart</h3>
     <div class="card card-body mb-4"></div>
+    <!-- end price chart -->
+
+    <!-- begin private listings -->
     <h3>Private Listings</h3>
     <div class="card card-body mb-4">
         <div class="section">
@@ -295,102 +310,61 @@
             </div>
         </div>
     </div>
+    <!-- end private listings -->
+    @endif
+
     <h3>Comments</h3>
     <div class="card card-body">
         <div class="d-flex gap-2">
-            <input type="text" class="form-control" placeholder="What are your thoughts about this item?" />
-            <button type="submit" class="btn btn-success px-3">Post</button>
+            <form class="w-100" action="{{ route('market.item.comment', $item->id) }}" method="POST">
+                @csrf
+                <textarea type="text" name="body" class="form-control w-100" placeholder="What are your thoughts about this item?" rows="3"></textarea>
+                <button type="submit" class="btn btn-success mt-2">Post</button>
+            </form>
         </div>
-        <hr class="mb-0" />
-        <div class="section">
-            <div class="d-flex gap-3 align-items-center">
-                <img src="img/avatar/headshot.png" class="img-fluid rounded-circle headshot" width="86" />
-                <div class="w-100">
-                    <a href="#" class="text-xl fw-semibold text-light">Kyle</a>
-                    <div class="text-muted mb-2">
-                        this item looks so nice but i was too lazy to participate in the
-                        egg hunt so i didn't get it... sucks to suck!
-                    </div>
-                    <div class="text-muted text-sm">Posted 8 minutes ago</div>
-                </div>
-                <div class="dropdown">
-                    <button class="text-xl bg-transparent border-0 p-0 text-light" type="button"
-                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-three-dots-vertical text-xl"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
-                        <li>
-                            <span class="text-center dropdown-item-text notification-dropdown-title p-0">More</span>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider mb-1" />
-                        </li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="#">Report</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <div class="d-flex gap-3 align-items-center">
-                <img src="img/avatar/headshot.png" class="img-fluid rounded-circle headshot" width="86" />
-                <div class="w-100">
-                    <a href="#" class="text-xl fw-semibold text-light">Kyle</a>
-                    <div class="text-muted mb-2">
-                        this item looks so nice but i was too lazy to participate in the
-                        egg hunt so i didn't get it... sucks to suck!
-                    </div>
-                    <div class="text-muted text-sm">Posted 8 minutes ago</div>
-                </div>
-                <div class="dropdown">
-                    <button class="text-xl bg-transparent border-0 p-0 text-light" type="button"
-                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-three-dots-vertical text-xl"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
-                        <li>
-                            <span class="text-center dropdown-item-text notification-dropdown-title p-0">More</span>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider mb-1" />
-                        </li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="#">Report</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <div class="d-flex gap-3 align-items-center">
-                <img src="img/avatar/headshot.png" class="img-fluid rounded-circle headshot" width="86" />
-                <div class="w-100">
-                    <a href="#" class="text-xl fw-semibold text-light">Kyle</a>
-                    <div class="text-muted mb-2">
-                        this item looks so nice but i was too lazy to participate in the
-                        egg hunt so i didn't get it... sucks to suck!
-                    </div>
-                    <div class="text-muted text-sm">Posted 8 minutes ago</div>
-                </div>
-                <div class="dropdown">
-                    <button class="text-xl bg-transparent border-0 p-0 text-light" type="button"
-                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-three-dots-vertical text-xl"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
-                        <li>
-                            <span class="text-center dropdown-item-text notification-dropdown-title p-0">More</span>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider mb-1" />
-                        </li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="#">Report</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+        <hr class="mb-3" />
+        <span id="comment-data">
+            
+            @if($comments->count() > 0)
+                @include('components.load_item_comments')
+            @else
+                <center class="mt-4">No comments :(</center>
+            @endif
+        </span>
     </div>
+    <div class="mb-5">&nbsp;</div>
+    <x-slot name="script">
+        <script>
+            var query = window.location.search;
+            var pageUrl = '';
+            if(query) {
+                pageUrl = query+'&page=';
+            } else {
+                pageUrl = '?page=';
+            }
+            function loadMoreData(page) {
+                $.ajax({
+                    url:pageUrl+''+page,
+                    type:'get',
+                })
+                    .done(function(data) {
+                        if(data.html == " ") {
+                            return;
+                        }
+                        $("#comment-data").append(data.html);
+                    })
+                    .fail(function(jqXHR, ajaxOptions, thrownError) {
+                        console.log("Server not responding...");
+                    });
+            }
+
+            var page = 1;
+            $(window).scroll(function() {
+                if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+                    page++;
+                    loadMoreData(page);
+                }
+            });
+        </script>
+    </x-slot>
 </x-app-layout>

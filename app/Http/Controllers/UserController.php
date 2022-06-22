@@ -64,7 +64,7 @@ class UserController extends Controller
             $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
         }
 
-        if($user->exists && $user->deleted == 0)
+        if($user && $user->deleted == 0)
         {
             if(auth()->user())
             {
@@ -249,10 +249,10 @@ class UserController extends Controller
         }
 
         $this->validate($request, [
-            'description' => 'nullable|max:280|string',
-            'signature' => 'nullable|max:50|string',
-            'birthday' => 'required|date',
-            'theme' => 'required'
+            'description' => ['nullable', 'max:280', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i'],
+            'signature' => ['nullable', 'max:50', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i'],
+            'birthday' => ['required', 'date'],
+            'theme' => ['required'],
         ]);
 
         $user = User::where('id', Auth::user()->id)->first();

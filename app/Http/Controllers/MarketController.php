@@ -132,20 +132,47 @@ class MarketController extends Controller
 
     public function show_item(Request $request, Item $item)
     {
-        $item = Item::find($item->id);
-
-        $comments = Comment::where('target_id', '=', $item->id)->where('scrubbed', '=', '0')->orderBy('id', 'DESC');
-        if(!$item->exists()) {
+        if(!$item->exists) {
             abort(404);
         }
-        if($comments->get() != "[]")
+
+        $comments = Comment::where('target_id', '=', $item->id)->where('type', '=', '1')->where('scrubbed', '=', '0')->orderBy('created_at', 'DESC')->paginate('5');
+
+        if($request->ajax() && $comments->count() > 0)
         {
-           $comments = $comments->paginate(10);
-        } else {
-            $comments = $comments->get();
+            $view = view('components.load_item_comments', compact('comments'))->render();
+            return response()->json(['html' => $view]);
         }
 
         return view('market.item', compact(['item', 'comments']));
+    }
+
+    public function add_comment(Request $request, Item $item)
+    {
+        if($item->exists)
+        {
+            abort(404);
+        }
+
+        if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(env('FLOOD_GATE'))))
+        {
+            return back()->withInput()->with('error', 'Please wait '. env('FLOOD_GATE') . ' seconds before making another post.');
+        }
+
+        $this->validate($request, [
+            'body' => ['required', 'min:3', 'max:280', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i'],
+        ]);
+
+        Comment::create([
+            'user_id' => auth()->id(),
+            'text' => request('body'),
+            'target_id' => $item->id,
+        ]);
+
+        $flood = auth()->user();
+        $flood->flood_gate = Carbon::now();
+        $flood->save();
+        return back()->with('success', 'Successfully posted comment!');
     }
 
     public function create_item(Request $request)
