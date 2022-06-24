@@ -29,6 +29,8 @@ class Item extends Model
         'approved_by',
         'sales',
         'hash',
+        'updated_real',
+        'offsale_at',
     ];
 
     protected $dates = [
@@ -60,10 +62,10 @@ class Item extends Model
 
     public function get_render()
     {
-        if($this->approved == 1)
+        if($this->pending == 1)
         {
             return asset('img/market/pending.png');
-        } elseif($this->approved == 2) {
+        } elseif($this->pending == 2) {
             return asset('img/market/denied.png');
         } else {
             return "https://cdn.buildaverse.net/".$this->hash.".png";
@@ -82,6 +84,11 @@ class Item extends Model
         } else {
             return $this->stock_limit;
         }
+    }
+
+    public function market()
+    {
+        return $this->hasMany(ItemReseller::class, 'item_id')->orderBy('price', 'ASC');
     }
 
     public function get_type()
@@ -117,7 +124,7 @@ class Item extends Model
 
     public function free()
     {
-        if($this->cash == -1 && $this->coins == -1)
+        if($this->cash < 0 && $this->coins < 0)
         {
             return true;
         } else {

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('user_id');
             $table->bigInteger('source_id');
+            $table->bigInteger('source_user');
             $table->integer('source_type');
             $table->bigInteger('cash')->nullable();
             $table->bigInteger('coins')->nullable();

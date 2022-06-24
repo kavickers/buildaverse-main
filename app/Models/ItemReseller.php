@@ -15,16 +15,16 @@ class ItemReseller extends Model
         'user_id',
         'item_id',
         'inventory_id',
-        'price'
+        'price',
     ];
 
     public function seller()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function inventory()
     {
-        return $this->belongsTo(Inventory::class);
+        return $this->belongsTo(Inventory::class, 'inventory_id');
     }
 }

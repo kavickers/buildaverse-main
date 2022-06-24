@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->text('name');
-            $table->text('desc');
+            $table->text('desc')->nullable();
             $table->bigInteger('creator_id');
             $table->timestamps();
             $table->timestamp('updated_real')->useCurrent();

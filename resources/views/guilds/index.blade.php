@@ -1,7 +1,5 @@
-@extends('layouts.app')
-
-@section('title', 'Your Guilds')
-
-@section('content')
-
-@endsection
+<x-app-layout>
+    <x-slot name="title">Page Title</x-slot>
+    <x-slot name="navigation"></x-slot>
+    
+</x-app-layout>

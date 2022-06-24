@@ -62,7 +62,10 @@ Route::domain('dev.brixoro.com')->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
             Route::get('/friends', 'friends')->name('user.friends');
             Route::get('/account/settings', 'settings')->name('user.settings');
+            Route::get('/money', 'money')->name('user.money');
 
+            Route::post('/money/trade/cash', 'transfer_cash')->name('user.trade.cash');
+            Route::post('/money/trade/coins', 'transfer_coins')->name('user.trade.coins');
             Route::post('/account/settings/general', 'update_settings_general')->name('user.settings.update.general');
             Route::post('/account/settings/privacy', 'update_settings_privacy')->name('user.settings.update.privacy');
             Route::post('/account/settings/logout_all', 'logout_other_sessions')->name('user.settings.logoutall');
@@ -138,29 +141,31 @@ Route::domain('dev.brixoro.com')->group(function () {
             Route::get('/market/create/pants', 'create_pants')->name('market.create.pants');
             Route::get('/market/{item}/edit', 'edit_item')->name('market.item.edit');
 
-
+            Route::post('/market/item/{item}/list', 'list')->name('market.list');
+            Route::post('/market/item/{item}/unlist', 'unlist')->name('market.unlist');
             Route::post('/market/item/{item}/listing/{listing}/buy', 'buy_listing')->name('market.listing.buy');
-            Route::post('/market/item/{item}/buy/{type}', 'buy_item')->name('market.item.buy');
+            Route::post('/market/item/{item}/buy/{type}', 'buy_item')->name('market.item.buy'); 
             Route::post('/market/item/{item}/comment', 'comment')->name('market.item.comment');
             Route::post('/market/create/shirt/process', 'upload_shirt')->name('market.create.shirt.process');
             Route::post('/market/create/pants/process', 'upload_pants')->name('market.create.pants.process');
             Route::post('/market/{item}/edit', 'edit')->name('market.item.edit.post');
+            Route::post('/market/{item}/delete', 'delete')->name('market.item.delete');
         });
     });
 
     Route::controller(GuildsController::class)->group(function ()
     {
         /* Guest routes */
-        Route::get('/guilds/{guild}/view', 'view')->name('guilds.view');
-        Route::get('/guilds/search', 'search')->name('guilds.search');
-        Route::get('/guilds/explore', 'explore')->name('guilds.explore');
+        Route::get('/communities/{guild}/view', 'view')->name('guilds.view');
+        Route::get('/communities/search', 'search')->name('guilds.search');
+        Route::get('/communities/explore', 'explore')->name('guilds.explore');
 
         /* Authenticated routes */
         Route::middleware(['auth'])->group(function ()
         {
-            Route::get('/guilds/{guild}/edit', 'edit')->name('guilds.edit');
-            Route::get('/guilds/create', 'create')->name('guilds.create');
-            Route::get('/guilds', 'index')->name('guilds.index');
+            Route::get('/communities/{guild}/edit', 'edit')->name('guilds.edit');
+            Route::get('/communities/create', 'create')->name('guilds.create');
+            Route::get('/communities', 'index')->name('guilds.index');
         });
     });
 });
@@ -179,19 +184,19 @@ Route::domain('antelope.is')->group(function() {
 });
 
 /* APIs */
+/* This section will be opened and improved upon later once we start doing public APIs, for now it just holds the Avatars and basic things to call upon elsewhere */
 Route::domain('avatars.buildaverse.net')->group(function() {
     Route::controller(AvatarsController::class)->group(function ()
     {
-        Route::get('/', 'index');
+        //Route::get('/', 'index');
         /*
         * Buildaverse Avatar APIs v1.0.0; originally created April 18th, 2021 at 4:30AM for BLOXCity.com
         */
-        Route::group(['prefix' => 'v1'], function() {
-            Route::get('/', 'v1');
-            Route::get('/render/{user}', 'render');
-            Route::get('/market/{item}', 'market');
-        });
+        //Route::group(['prefix' => 'v1'], function() {
+            //Route::get('/', 'v1');
+            //Route::get('/render/{user}', 'render');
+            //Route::get('/market/{item}', 'market');
+        //});
         
     });
-    
 });

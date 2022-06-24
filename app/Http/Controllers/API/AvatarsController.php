@@ -60,13 +60,14 @@ class AvatarsController extends Controller
             //make sure the user avatar wasn't rendered too quickly
             if(!$user->avatar_render || $user->avatar_render > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
             {
-                return response()->json([
-                    'success' => 'false',
-                    'errors' => [
-                        'code' => '0',
-                        'message' => 'Something went wrong with that request, see response status code.'
-                    ],
-                ], 429, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+                return with('error', 'You\'re doing that too fast!');
+                //return response()->json([
+                //    'success' => 'false',
+                //    'errors' => [
+                //        'code' => '0',
+                //        'message' => 'Something went wrong with that request, see response status code.'
+                //    ],
+                //], 429, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
             }
 
             //debug mode
@@ -141,28 +142,30 @@ class AvatarsController extends Controller
                 $user->avatar_url = $randomHash;
                 $user->avatar_render = Carbon::now();
                 $user->save();
-                return response()->json([
-                    'success' => 'true',
-                    'hash' => $randomHash,
-                ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+            //    return response()->json([
+            //        'success' => 'true',
+            //        'hash' => $randomHash,
+            //    ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
             } else {
                 exec($cmd);
                 $user->avatar_url = $randomHash;
                 $user->avatar_render = Carbon::now();
                 $user->save();
-                return response()->json([
-                    'success' => 'true',
-                    'hash' => $randomHash,
-                ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+                return;
+            //    return response()->json([
+            //        'success' => 'true',
+            //        'hash' => $randomHash,
+            //    ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
             }
         }
-        return response()->json([
-            'success' => 'false',
-            'errors' => [
-                'code' => '0',
-                'message' => 'Something went wrong with that request, see response status code.'
-            ],
-        ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        return;
+        //return response()->json([
+        //    'success' => 'false',
+        //    'errors' => [
+        //        'code' => '0',
+        //        'message' => 'Something went wrong with that request, see response status code.'
+        //    ],
+        //], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
     }
 
     public function market(Item $item)
@@ -240,26 +243,14 @@ class AvatarsController extends Controller
                 echo system($cmd) . "<br>".$cmd."<br>";
                 $item->hash = $randomHash;
                 $item->save();
-                return response()->json([
-                    'success' => 'true',
-                    'hash' => $randomHash,
-                ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+                return;
             } else {
                 exec($cmd);
                 $item->hash = $randomHash;
                 $item->save();
-                return response()->json([
-                    'success' => 'true',
-                    'hash' => $randomHash,
-                ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+                return;
             }
         }
-        return response()->json([
-            'success' => 'false',
-            'errors' => [
-                'code' => '0',
-                'message' => 'Something went wrong with that request, see response status code.'
-            ],
-        ], 404, [], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        return;
     }
 }

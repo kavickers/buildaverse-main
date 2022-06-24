@@ -28,7 +28,7 @@
                     <li><a class="dropdown-item" href="#">On Most Wishlists</a></li>
                 </ul>
             </div>
-            <div class="input-parent has-icon">
+            <div class="input-parent has-icon w-100">
                 <i class="bi bi-search"></i>
                 <input type="text" class="form-control" placeholder="Search..." />
             </div>
@@ -60,12 +60,14 @@
                 </li>
             </ul>
         </div>
+        @auth
         <div class="col-md-3 text-end">
-            <a href="#" class="btn btn-primary btn-rounded d-none d-md-inline-block" style="margin-top: 2px">Create Item</a>
-            <a href="#" class="btn btn-primary btn-floating d-flex d-md-none">
+            <a href="{{ route('market.create.index') }}" class="btn btn-primary btn-rounded d-none d-md-inline-block" style="margin-top: 2px">Create Item</a>
+            <a href="{{ route('market.create.index') }}" class="btn btn-primary btn-floating d-flex d-md-none">
                 <i class="bi bi-plus"></i>
             </a>
         </div>
+        @endauth
     </div>
     <div class="row" id="market-data">
         @include('components.load_market')

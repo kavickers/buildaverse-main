@@ -52,6 +52,7 @@ class dailyCurrency
                 Transaction::create([
                     'user_id' => $user->id,
                     'source_id' => '1',
+                    'source_user' => '1',
                     'source_type' => '4',
                     'cash' => $cash,
                     'coins' => $coins,

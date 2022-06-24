@@ -110,7 +110,7 @@ class User extends Authenticatable
 
     public function transactions()
     {
-        return $this->hasMany(Transaction::class, 'user_id');
+        return $this->hasMany(Transaction::class, 'user_id')->orderBy('created_at', 'DESC');
     }
 
     public function released_transactions()
@@ -157,6 +157,12 @@ class User extends Authenticatable
         } else {
             return false;
         }
+    }
+
+    public function specials()
+    {
+        $get = Inventory::where('user_id', '=', $this->id)->where('special', '=', 1)->get();
+        return $get;
     }
 
     public function grant_currency(int $amount, $type)

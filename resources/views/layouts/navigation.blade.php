@@ -205,7 +205,7 @@
         <!-- Money Section-->
         <div class="navbar-nav d-none d-md-inline-block">
             <div class="nav-item text-nowrap nav-pill">
-                <a href="#" class="nav-pill-section nav-pill-icon-left font-weight-normal">
+                <a href="{{ route('user.money') }}" class="nav-pill-section nav-pill-icon-left font-weight-normal" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{{ number_format(auth()->user()->cash) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                          class="bi-cash-stack nav-pill-section-icon text-success" viewBox="0 0 16 16">
                         <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1H1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
@@ -214,7 +214,7 @@
                     <span>&nbsp;{{ auth()->user()->get_short_num(auth()->user()->cash) }}</span>
                 </a>
 
-                <a href="#" class="nav-pill-section nav-pill-icon-right font-weight-normal">
+                <a href="{{ route('user.money') }}" class="nav-pill-section nav-pill-icon-right font-weight-normal" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{{ number_format(auth()->user()->coins) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                          class="bi-coin nav-pill-section-icon text-warning" viewBox="0 0 16 16">
                         <path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9H5.5zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518l.087.02z" />
@@ -317,27 +317,27 @@
     <div class="d-flex flex-column flex-shrink-0 sidebar">
         <ul class="nav nav-pills nav-flush flex-column mb-auto text-center mt-2">
             <li class="nav-item">
-                <a href="/" class="nav-link sidebar-icon side-nav-active my-3 py-0" aria-current="page" title="Home" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
+                <a href="/" class="nav-link sidebar-icon @if(request()->is('dashboard*')) side-nav-active @endif my-3 py-0" aria-current="page" title="Home" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
                     <h4 class="m-0"><i class="bi bi-house-door"></i></h4>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link sidebar-icon my-3 py-0" aria-current="page" title="Worlds" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Worlds">
+                <a href="#" class="nav-link sidebar-icon @if(request()->is('worlds*')) side-nav-active @endif my-3 py-0" aria-current="page" title="Worlds" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Worlds">
                     <h4 class="m-0"><i class="bi bi-controller"></i></h4>
                 </a>
             </li>
             <li>
-                <a href="{{ route('market.index') }}" class="nav-link sidebar-icon my-3 py-0" title="Marketplace" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Marketplace">
+                <a href="{{ route('market.index') }}" class="nav-link sidebar-icon @if(request()->is('market*')) side-nav-active @endif my-3 py-0" title="Marketplace" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Marketplace">
                     <h4 class="m-0"><i class="bi bi-shop-window"></i></h4>
                 </a>
             </li>
             <li>
-                <a href="{{ route('forum.index') }}" class="nav-link sidebar-icon my-3 py-0" title="Forums" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Forums">
+                <a href="{{ route('forum.index') }}" class="nav-link sidebar-icon @if(request()->is('forum*')) side-nav-active @endif my-3 py-0" title="Forums" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Forums">
                     <h4 class="m-0"><i class="bi bi-menu-up"></i></h4>
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link sidebar-icon my-3 py-0" title="Communities" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Communities">
+                <a href="#" class="nav-link sidebar-icon @if(request()->is('community*')) side-nav-active @endif my-3 py-0" title="Communities" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Communities">
                     <h4 class="m-0"><i class="bi bi-person-video2"></i></h4>
                 </a>
             </li>
@@ -409,7 +409,7 @@
                     </li>
                     <li><span class="dropdown-item-text text-small text-muted text-bold" href="#">MONEY</span></li>
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="{{ route('user.money') }}">
                             <i class="bi bi-cash-stack text-success" style="vertical-align: 0;"></i>&nbsp;{{ auth()->user()->get_short_num(auth()->user()->cash) }}&nbsp;&nbsp;&nbsp;
                             <i class="bi bi-coin text-warning" style="vertical-align: 0;"></i>&nbsp;{{ auth()->user()->get_short_num(auth()->user()->coins) }}</a></li>
                     <li>

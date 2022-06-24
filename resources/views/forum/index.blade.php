@@ -3,7 +3,7 @@
     <x-slot name="navigation"></x-slot>
     <div class="card p-3 px-4 mb-2 mt-md-2 mobile-header">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="dropdown">
+            <div class="dropdown shrink">
                 <button class="text-xl bg-transparent border-0 p-0 text-white" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     @if(!isset($_GET['topic'])) All Topics @else {{ \App\Models\Topic::where('id', '=', $_GET['topic'])->get()->first()->name }} @endif
                     <i class="bi bi-chevron-down text-sm ms-2 align-middle"></i>
@@ -30,8 +30,12 @@
                     @endforeach
                 </ul>
             </div>
+            <div class="w-100 mx-2 mx-md-4 input-parent has-icon">
+                <i class="bi bi-search"></i>
+                <input type="text" class="form-control" placeholder="Search...">
+            </div>
             @auth
-                <div>
+                <div class="shrink">
                     <a href="#" class="text-xl text-white" data-bs-toggle="tooltip" title="My Threads">
                         <i class="bi bi-chat-left-text"></i>
                     </a>

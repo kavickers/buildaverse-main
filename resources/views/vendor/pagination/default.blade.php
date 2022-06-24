@@ -1,54 +1,52 @@
 @if ($paginator->hasPages())
-    <div class="text-center">
-        <div class="btn-group" role="group" aria-label="Button group as pagination">
+<div class="mx-auto mt-3">
+    <nav aria-label="Pagination">
+        <ul class="pagination flex-wrap">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
-                <button class="btn btn-square" type="button" disabled>
-                    <i class="fa fa-angle-left" aria-hidden="true"></i>
-                    <span class="sr-only">Previous page</span>
-                </button>
+            <li class="page-item disabled">
+                <a class="page-link">Previous</a>
+            </li>
             @else
-                <a href="{{ $paginator->previousPageUrl() }}" class="no-style">
-                    <button class="btn btn-square" type="button">
-                            <i class="fa fa-angle-left" aria-hidden="true"></i>
-                            <span class="sr-only">Previous page</span>
-                    </button>
-                </a>
+            <li class="page-item">
+                <a class="page-link" href="{{ $paginator->previousPageUrl() }}">Previous</a>
+            </li>
             @endif
 
             {{-- Pagination Elements --}}
             @foreach ($elements as $element)
                 {{-- "Three Dots" Separator --}}
                 @if (is_string($element))
-                    <button class="btn btn-square" type="button">...</button>
+                    <li class="page-item"><a class="page-link">...</a></li>
                 @endif
 
                 {{-- Array Of Links --}}
                 @if (is_array($element))
                     @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
-                            <button class="btn btn-square btn-primary" type="button">{{ $page }}</button>
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                            </li>
                         @else
-                            <a href="{{ $url }}" class="no-style"><button class="btn btn-square" type="button">{{ $page }}</button></a>
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                            </li>
                         @endif
                     @endforeach
                 @endif
             @endforeach
-
+            
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
-                <a href="{{ $paginator->nextPageUrl() }}" class="no-style">
-                    <button class="btn btn-square" type="button">
-                            <i class="fa fa-angle-right" aria-hidden="true"></i>
-                            <span class="sr-only">Next page</span>
-                    </button>
-                </a>
+                <li class="page-item">
+                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}">Next</a>
+                </li>
             @else
-                <button class="btn btn-square" type="button" disabled>
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                    <span class="sr-only">Next page</span>
-                </button>
+                <li class="page-item disabled">
+                    <a class="page-link">Next</a>
+                </li>
             @endif
-        </div>
-    </div>
+        </ul>
+    </nav>
+</div>
 @endif

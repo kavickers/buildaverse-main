@@ -14,5 +14,14 @@ class Inventory extends Model
         'item_id',
         'type',
         'collection_number',
+        'special',
+        'can_trade',
+        'can_open',
+        'crate_id',
     ];
+
+    public function onsale()
+    {
+        return ItemReseller::where('inventory_id', '=', $this->id)->exists();
+    }
 }

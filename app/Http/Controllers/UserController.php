@@ -212,6 +212,84 @@ class UserController extends Controller
         return view('user.settings');
     }
 
+    public function money(Request $request)
+    {
+        $transactions = auth()->user()->transactions()->paginate(5);
+
+        if($request->ajax() && $transactions->count() > 0)
+        {
+            $view = view('components.load_user_transactions', compact('transactions'))->render();
+            return response()->json(['html' => $view]);
+        }
+
+        return view('user.money', compact(['transactions']));
+    }
+
+    public function transfer_cash(Request $request)
+    {
+        if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
+        {
+            return back()->with('error', 'You\'re doing that too fast!');
+        }
+
+        $this->validate($request, [
+            'cash' => ['required', 'numeric'],
+        ]);
+
+        if(request('cash') > auth()->user()->cash) {
+            return back()->with('error', 'You need more currency to complete this transaction!');
+        }
+
+        $num = request('cash') * 10;
+
+        if($num % 10 == 0)
+        {
+            $user = auth()->user();
+            $user->cash = $user->cash - request('cash');
+            $user->coins = $user->coins + $num;
+            $user->action_flood_gate = Carbon::now();
+            $user->save();
+
+            return back()->with('success', 'You have succesfully transferred your currency!');
+        } else {
+            return back()->with('error', 'Number must be divisble by 10.');
+        }
+    }
+
+    public function transfer_coins(Request $request)
+    {
+        if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
+        {
+            return back()->with('error', 'You\'re doing that too fast!');
+        }
+
+        $this->validate($request, [
+            'coins' => ['required', 'numeric'],
+        ]);
+
+        if(request('coins') > auth()->user()->coins) {
+            return back()->with('error', 'You need more currency to complete this transaction!');
+        }
+
+        if(request('coins') < 10) {
+            return back()->with('error', 'You must transfer a minimum of 10.');
+        }
+
+        if(request('coins') % 10 == 0)
+        {
+            $num = request('coins') / 10;
+            $user = auth()->user();
+            $user->coins = $user->coins - request('coins');
+            $user->cash = $user->cash + $num;
+            $user->action_flood_gate = Carbon::now();
+            $user->save();
+
+            return back()->with('success', 'You have succesfully transferred your currency!');
+        } else {
+            return back()->with('error', 'Number must be divisble by 10.');
+        }
+    }
+
     public function update_settings_privacy(Request $request)
     {
         if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))

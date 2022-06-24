@@ -1,57 +1,38 @@
-@extends('layouts.app')
-
-@section('title', 'Create Pants')
-
-@section('content')
+<x-app-layout>
+    <x-slot name="title">Create Pants</x-slot>
+    <x-slot name="navigation"></x-slot>
     <div class="row">
         <div class="col"></div>
-        <div class="col-md-6">
-            <div class="card p-0">
+        <div class="col-md-8">
+            <div class="card">
                 <div class="card-header text-white font-weight-medium">
                     Create Pants
                 </div>
-                <div class="p-15">
-                    <form action="{{ route('market.create.pants.process') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group">
-                            <label for="title" class="required">Title</label>
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Title" required="required">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <form action="{{ route('market.create.pants.process') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <label class="text-sm mb-1 text-muted fw-bold">NAME:</label>
+                                <input type="text" class="form-control mb-2" id="title" name="title" placeholder="Name" required>
+                                <label class="text-sm mb-1 text-muted fw-bold">DESCRIPTION:</label>
+                                <textarea class="form-control mb-3" rows="6" id="description" name="description" placeholder="(optional)"></textarea>
+                                <div class="my-2">
+                                    <input class="form-control" type="file" name="image" id="formFile" required>
+                                </div>
+                                <button type="submit" class="btn btn-success">
+                                    Upload
+                                </button>
+                            </form>
                         </div>
-                        <div class="form-group">
-                            <label for="description">Description</label>
-                            <textarea class="form-control" id="description" name="description" placeholder="(optional)"></textarea>
+                        <div class="col-md-5">
+                            <img src="https://cdn.buildaverse.net/pants_template.png" class="img-fluid mx-auto rounded mt-2 mt-md-0 mb-2">
+                            <a href="https://cdn.buildaverse.net/pants_template.png" target="_blank" class="btn btn-primary d-block text-center"><i class="bi bi-box-arrow-down me-2"></i>Download Template</a>
                         </div>
-                        <div class="form-group">
-                            <label for="image" class="required">Template</label>
-                            <div class="custom-file">
-                                <input type="file" id="image" name="image" required="required">
-                                <label for="image">Choose file</label>
-                            </div>
-                        </div>
-                        <input class="btn btn-success btn-block" type="submit" value="Create">
-                    </form>
-
-                    <script type="text/javascript">
-
-                        @if(count($errors))
-                            @foreach($errors->all() as $error)
-                                toastDangerAlert("Error", "<?php echo $error; ?>");
-                            @endforeach
-                        @endif
-
-                        function toastDangerAlert(title, content) {
-                            halfmoon.initStickyAlert({
-                                content: content,
-                                title: title,
-                                alertType: "alert-danger",
-                                fillType: "filled"
-                            });
-                        }
-                    </script>
+                    </div>
                 </div>
             </div>
-
         </div>
         <div class="col"></div>
     </div>
-@endsection
+</x-app-layout>

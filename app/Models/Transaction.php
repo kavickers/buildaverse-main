@@ -14,6 +14,7 @@ class Transaction extends Model
     protected $fillable = [
         'user_id',
         'source_id',
+        'source_user',
         'source_type',
         'type',
         'cash',
@@ -29,6 +30,68 @@ class Transaction extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function source()
+    {
+        if($this->source_type == 1)
+        {
+            return $this->belongsTo(Item::class, 'source_id');
+        } elseif($this->source_type == 2) {
+            return $this->belongsTo(Guild::class, 'source_id');
+        } elseif($this->source_type == 3) {
+            //return $this->belongsTo(World::class, 'source_id');
+        } elseif($this->source_type == 4) {
+            return $this->belongsTo(User::class, 'source_id');
+        }
+    }
+
+    public function url()
+    {
+        if($this->source_type == 1)
+        {
+            return route('market.item', $this->source_id);
+        } elseif($this->source_type == 2) {
+            return route('guilds.view', $this->source_id);
+        } elseif($this->source_type == 3) {
+            //return route('worlds.view', $this->source_id);
+        }
+    }
+
+    public function image()
+    {
+        if($this->source_type == 1)
+        {
+            //return route('market.item', $this->source_id);
+            return 'https://cdn.buildaverse.net/' . $this->source->hash . '.png';
+        } elseif($this->source_type == 2) {
+            //return route('guilds.view', $this->source_id);
+            return '';
+        } elseif($this->source_type == 3) {
+            //return route('worlds.view', $this->source_id);
+            return '';
+        }
+    }
+
+    public function get_type()
+    {
+        if($this->type == 1)
+        {
+            return 'Purchase';
+        } elseif($this->type == 2) {
+            return 'Sale';
+        } elseif($this->type == 3) {
+            return 'Community Payout';
+        } elseif($this->type == 4) {
+            return 'Premium Stipend';
+        } elseif($this->type == 5) {
+            return 'Currency Purchase';
+        }
+    }
+
+    public function get_member()
+    {
+        return $this->belongsTo(User::class, 'source_user');
     }
 
     /**

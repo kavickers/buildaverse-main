@@ -19,6 +19,7 @@ return new class extends Migration
             $table->bigInteger('item_id');
             $table->tinyInteger('type');
             $table->string('collection_number')->nullable()->unique();
+            $table->tinyInteger('special')->default(0);
             $table->tinyInteger('can_trade')->default('0');
             $table->tinyInteger('can_open')->default('0');
             $table->integer('crate_id')->nullable();

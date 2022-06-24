@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Inventory;
 use App\Models\Item;
+use App\Models\ItemData;
+use App\Models\ItemReseller;
 use App\Models\Transaction;
 use Carbon\Carbon;
+use Faker\Core\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class MarketController extends Controller
 {
@@ -63,10 +67,10 @@ class MarketController extends Controller
             $items = $items->orderBy('updated_real', 'DESC');
         } elseif ($advanced_sort == 2)
         {
-            $items = $items->orderBy('created_at', 'DESC');
+            $items = $items->orderBy('updated_real', 'DESC');
         } elseif ($advanced_sort == 3)
         {
-            $items = $items->orderBy('created_at', 'ASC');
+            $items = $items->orderBy('updated_real', 'ASC');
         } elseif ($advanced_sort == 4)
         {
             $items = $items->orderBy('cash', 'ASC')->orderBy('coins', 'ASC');
@@ -99,23 +103,34 @@ class MarketController extends Controller
         request()->validate([
             'title' => ['required', 'min:3', 'max:64'],
             'description' => ['max:2048'],
+            'cash' => ['numeric', 'min:-1'],
+            'coins' => ['numeric'],
         ]);
 
         $cash = $request['cash'];
         $coins = $request['coins'];
 
-        if($request['offsale'])
+        if($request->has('offsale'))
+        {
             $cash = 0;
             $coins = 0;
+        }
+        
+        if($request->has('free'))
+        {
+            $cash = -1;
+            $coins = -1;
+        }
 
         $update = $item->update([
             'name' => $request['title'],
             'desc' => $request['description'],
             'cash' => $cash,
             'coins' => $coins,
+            'updated_real' => Carbon::now(),
         ]);
 
-        return back();
+        return back()->with('success', 'Item successfully updated!');
     }
 
     public function edit_item(Request $request, Item $item)
@@ -126,6 +141,9 @@ class MarketController extends Controller
         {
             abort(404);
         }
+
+        if(auth()->user()->id != $item->owner->id)
+            return abort(403);
 
         return view('market.edit', compact(['item']));
     }
@@ -144,7 +162,9 @@ class MarketController extends Controller
             return response()->json(['html' => $view]);
         }
 
-        return view('market.item', compact(['item', 'comments']));
+        $markets = $item->market()->paginate(5, '*', 'resellers');
+
+        return view('market.item', compact(['item', 'comments', 'markets']));
     }
 
     public function add_comment(Request $request, Item $item)
@@ -207,7 +227,12 @@ class MarketController extends Controller
         $realName = bin2hex(random_bytes(32));
         $imageName = $realName.'.'.request()->image->extension();
 
-        $request->image->storeAs('images', $imageName);
+        $disk = Storage::build([
+            'driver' => 'local',
+            'root' => '/var/www/storage/shirts',
+        ]);
+
+        $disk->putFileAs('', $request->image, $imageName);
 
         $upload = Item::create([
             'name' => request('title'),
@@ -226,8 +251,14 @@ class MarketController extends Controller
             'user_id' => Auth::user()->id,
             'item_id' => $upload->id,
             'type' => $upload->type,
-            'collectible_number' => $this->generateSerial(),
+            'collection_number' => $this->generateSerial(),
         ]);
+
+        app('App\Http\Controllers\API\AvatarsController')->market($upload);
+
+        $flood = auth()->user();
+        $flood->flood_gate = Carbon::now();
+        $flood->save();
 
         return redirect(route('market.item', $upload->id));
     }
@@ -248,7 +279,12 @@ class MarketController extends Controller
         $realName = bin2hex(random_bytes(32));
         $imageName = $realName.'.'.request()->image->getClientOriginalExtension();
 
-        $request->image->storeAs('images', $imageName);
+        $disk = Storage::build([
+            'driver' => 'local',
+            'root' => '/var/www/storage/pants',
+        ]);
+
+        $disk->putFileAs('', $request->image, $imageName);
 
         $upload = Item::create([
             'name' => request('title'),
@@ -267,8 +303,14 @@ class MarketController extends Controller
             'user_id' => Auth::user()->id,
             'item_id' => $upload->id,
             'type' => $upload->type,
-            'collectible_number' => $this->generateSerial(),
+            'collection_number' => $this->generateSerial(),
         ]);
+
+        app('App\Http\Controllers\API\AvatarsController')->market($upload);
+
+        $flood = auth()->user();
+        $flood->flood_gate = Carbon::now();
+        $flood->save();
 
         return redirect(route('market.item', $upload->id));
     }
@@ -290,6 +332,10 @@ class MarketController extends Controller
             'target_id' => $item->id,
         ]);
 
+        $flood = auth()->user();
+        $flood->flood_gate = Carbon::now();
+        $flood->save();
+
         return back();
     }
 
@@ -301,7 +347,7 @@ class MarketController extends Controller
             return back()->with('error', 'You\'re doing that too fast!');
         }
 
-        $user = Auth::user();
+        $user = auth()->user();
 
         // check ownership
         if($user->owns($item))
@@ -321,6 +367,11 @@ class MarketController extends Controller
             $coins = $item->coins * env('FREE_TAX');
         }
 
+        if($item->stock() == 0)
+        {
+            return back()->with('error', 'This item is out of stock.');
+        }
+
         // cash
         if($type == 1)
         {
@@ -329,8 +380,9 @@ class MarketController extends Controller
                 $user->revoke_currency($item->cash, $type);
 
                 $logPurchase = Transaction::create([
-                    'user_id' => Auth::user()->id,
+                    'user_id' => auth()->user()->id,
                     'source_id' => $item->id,
+                    'source_user' => $item->owner->id,
                     'source_type' => '1',
                     'type' => '1',
                     'cash' => $item->cash,
@@ -338,6 +390,7 @@ class MarketController extends Controller
                 $logSale = Transaction::create([
                     'user_id' => $item->owner->id,
                     'source_id' => $item->id,
+                    'source_user' => auth()->user()->id,
                     'source_type' => '1',
                     'type' => '2',
                     'cash' => $cash,
@@ -348,7 +401,11 @@ class MarketController extends Controller
                     'item_id' => $item->id,
                     'type' => $item->type,
                     'collection_number' => $this->generateSerial(),
+                    'special' => $item->special,
                 ]);
+
+                $user->action_flood_gate = Carbon::now();
+                $user->save();
 
                 return back()->with('success', 'Successfully purchased ' . $item->name .'!');
             }
@@ -362,6 +419,7 @@ class MarketController extends Controller
                 $logPurchase = Transaction::create([
                     'user_id' => auth()->user()->id,
                     'source_id' => $item->id,
+                    'source_user' => $item->owner->id,
                     'source_type' => '1',
                     'type' => '1',
                     'coins' => $item->coins,
@@ -369,17 +427,22 @@ class MarketController extends Controller
                 $logSale = Transaction::create([
                     'user_id' => $item->owner->id,
                     'source_id' => $item->id,
+                    'source_user' => auth()->user()->id,
                     'source_type' => '1',
                     'type' => '2',
                     'coins' => $coins,
                     'release_at' => $release,
                 ]);
                 $grantItem = Inventory::create([
-                    'user_id' => Auth::user()->id,
+                    'user_id' => auth()->user()->id,
                     'item_id' => $item->id,
                     'type' => $item->type,
                     'collection_number' => $this->generateSerial(),
+                    'special' => $item->special,
                 ]);
+
+                $user->action_flood_gate = Carbon::now();
+                $user->save();
 
                 return back()->with('success', 'Successfully purchased ' . $item->name .'!');
             }
@@ -389,12 +452,14 @@ class MarketController extends Controller
             $logPurchase = Transaction::create([
                 'user_id' => auth()->user()->id,
                 'source_id' => $item->id,
+                'source_user' => $item->owner->id,
                 'source_type' => '1',
                 'type' => '1',
             ]);
             $logSale = Transaction::create([
                 'user_id' => $item->owner->id,
                 'source_id' => $item->id,
+                'source_user' => auth()->user()->id,
                 'source_type' => '1',
                 'type' => '2',
             ]);
@@ -403,9 +468,180 @@ class MarketController extends Controller
                 'item_id' => $item->id,
                 'type' => $item->type,
                 'collection_number' => $this->generateSerial(),
+                'special' => $item->special,
             ]);
 
+            $user->action_flood_gate = Carbon::now();
+            $user->save();
+
             return back()->with('success', 'Successfully purchased ' . $item->name .'!');
+        }
+    }
+
+    public function delete(Request $request, Item $item)
+    {
+        // action flood gate
+        if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
+        {
+            return back()->with('error', 'You\'re doing that too fast!');
+        }
+
+        $user = auth()->user();
+
+        // check ownership
+        if($user->owns($item) && $item->special == 0)
+        {
+            $get = Inventory::where('item_id', '=', $item->id)->where('user_id', '=', auth()->user()->id)->first();
+            $get->delete();
+
+            $user->action_flood_gate = Carbon::now();
+            $user->save();
+
+            return back()->with('success', 'Deleted item from inventory!');
+        } else {
+            return back()->with('error', 'You don\'t own this item!');
+        }
+    }
+
+    public function list(Request $request, Item $item)
+    {
+        // action flood gate
+        if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
+        {
+            return back()->with('error', 'You\'re doing that too fast!');
+        }
+
+        request()->validate([
+            'price' => ['required', 'numeric', 'min:1'],
+        ]);
+
+        $user = auth()->user();
+
+        $getItem = Inventory::where('id', '=', request('serial'))->first();
+
+        // check ownership
+        if($user->owns($item) && $getItem != null && !$getItem->onsale())
+        {
+            ItemReseller::create([
+                'user_id' => auth()->user()->id,
+                'item_id' => $item->id,
+                'inventory_id' => request('serial'),
+                'price' => request('price'),
+            ]);
+
+            $user->action_flood_gate = Carbon::now();
+            $user->save();
+
+            return back()->with('success', 'Serial #'.$getItem->collection_number.' successfully listed on the market.');
+        } else {
+            return back()->with('error', 'There was an error trying to sell this item.');
+        }
+    }
+
+    public function unlist(Request $request, Item $item)
+    {
+        // action flood gate
+        if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
+        {
+            return back()->with('error', 'You\'re doing that too fast!');
+        }
+
+        request()->validate([
+            'serial' => ['required'],
+        ]);
+
+        $user = auth()->user();
+
+        $getItem = ItemReseller::where('id', '=', request('serial'))->first();
+
+        // check ownership
+        if($user->owns($item) && $getItem != null)
+        {
+            $item = ItemReseller::where([
+                ['id', '=', request('serial')],
+                ['user_id', '=', $user->id],
+            ])->firstOrFail();
+
+            $item->delete();
+
+            $user->action_flood_gate = Carbon::now();
+            $user->save();
+
+            return back()->with('success', 'Serial #'.$getItem->inventory->collection_number.' successfully removed from the market.');
+        } else {
+            return back()->with('error', 'There was an error trying to take this item offsale.');
+        }
+
+    }
+
+    public function buy_listing(Request $request, Item $item, ItemReseller $listing)
+    {
+        // action flood gate
+        if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
+        {
+            return back()->with('error', 'You\'re doing that too fast!');
+        }
+
+        request()->validate([
+            'serial' => ['required'],
+        ]);
+
+        $user = auth()->user();
+
+        $getItem = ItemReseller::where('id', '=', request('serial'))->first();
+
+        if($getItem != null && (auth()->user()->id != $getItem->user_id))
+        {
+            if(auth()->user()->cash >= $getItem->price)
+            {
+                $release = Carbon::now();
+                $release = $release->addDay();
+
+                if($getItem->seller->membership())
+                {
+                    $cash = $getItem->price * env('PAID_TAX');
+                } else {
+                    $cash = $getItem->price * env('FREE_TAX');
+                }
+
+                $user->revoke_currency($getItem->price, 1);
+
+                $logPurchase = Transaction::create([
+                    'user_id' => auth()->user()->id,
+                    'source_id' => $item->id,
+                    'source_user' => $getItem->seller->id,
+                    'source_type' => '1',
+                    'type' => '1',
+                    'cash' => $getItem->price,
+                ]);
+                $logSale = Transaction::create([
+                    'user_id' => $getItem->seller->id,
+                    'source_id' => $item->id,
+                    'source_user' => auth()->user()->id,
+                    'source_type' => '1',
+                    'type' => '2',
+                    'cash' => $cash,
+                    'release_at' => $release,
+                ]);
+
+                $logData = ItemData::create([
+                    'item_id' => $item->id,
+                    'price' => $getItem->price,
+                ]);
+                
+                $inventory = $getItem->inventory;
+                $inventory->user_id = auth()->user()->id;
+                $inventory->save();
+
+                $getItem->delete();
+
+                $user->action_flood_gate = Carbon::now();
+                $user->save();
+
+                return back()->with('success', 'Successfully purchased Serial #'. $getItem->inventory->collection_number.' of ' . $item->name .'!');
+            }
+        } else {
+            return back()->with('error', 'There was an error trying to buy this item.');
         }
     }
 
