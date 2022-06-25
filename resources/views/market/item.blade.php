@@ -147,7 +147,7 @@
                         </div>
                         <!-- end coins modal -->
                         @endif
-                        @if($item->free())
+                        @if($item->coins < 0 && $item->cash < 0)
                         <button type="button" data-bs-toggle="modal" data-bs-target="#freeModal" class="btn btn-info d-none d-lg-inline-block btn-lg fw-semibold">
                             Free
                         </button>
