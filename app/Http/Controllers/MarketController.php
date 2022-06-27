@@ -7,6 +7,7 @@ use App\Models\Inventory;
 use App\Models\Item;
 use App\Models\ItemData;
 use App\Models\ItemReseller;
+use App\Models\Setting;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Faker\Core\File;
@@ -19,6 +20,11 @@ class MarketController extends Controller
 {
     public function index(Request $request)
     {
+
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
 
         $items = Item::latest();
 
@@ -92,6 +98,11 @@ class MarketController extends Controller
 
     public function edit(Request $request, Item $item)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(env('FLOOD_GATE'))))
         {
             return back()->with('error', 'You\'re doing that too fast!');
@@ -101,8 +112,8 @@ class MarketController extends Controller
             return abort(403);
 
         request()->validate([
-            'title' => ['required', 'min:3', 'max:64'],
-            'description' => ['max:2048'],
+            'title' => ['required', 'min:3', 'max:64', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i'],
+            'description' => ['max:2048', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i'],
             'cash' => ['numeric', 'min:-1'],
             'coins' => ['numeric'],
         ]);
@@ -135,6 +146,11 @@ class MarketController extends Controller
 
     public function edit_item(Request $request, Item $item)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         $item = Item::find($item->id);
 
         if(!$item->exists())
@@ -154,6 +170,8 @@ class MarketController extends Controller
             abort(404);
         }
 
+        //return $item->free();
+
         $comments = Comment::where('target_id', '=', $item->id)->where('type', '=', '1')->where('scrubbed', '=', '0')->orderBy('created_at', 'DESC')->paginate('5');
 
         if($request->ajax() && $comments->count() > 0)
@@ -169,6 +187,11 @@ class MarketController extends Controller
 
     public function add_comment(Request $request, Item $item)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         if($item->exists)
         {
             abort(404);
@@ -197,21 +220,40 @@ class MarketController extends Controller
 
     public function create_item(Request $request)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         return view('market.new');
     }
 
     public function create_shirt(Request $request)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         return view('market.shirt');
     }
 
     public function create_pants(Request $request)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         return view('market.pants');
     }
 
     public function upload_shirt(Request $request)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
 
         if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(env('FLOOD_GATE'))))
         {
@@ -219,8 +261,8 @@ class MarketController extends Controller
         }
 
         $request->validate([
-            'title' => 'required|min:3|max:64',
-            'description' => 'max:2048',
+            'title' => 'required|min:3|max:64|regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i',
+            'description' => 'max:2048|regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i',
             'image' => 'required|image|mimes:png|max:2048',
         ]);
 
@@ -265,6 +307,11 @@ class MarketController extends Controller
 
     public function upload_pants(Request $request)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(env('FLOOD_GATE'))))
         {
             return back()->with('error', 'You\'re doing that too fast!');
@@ -272,8 +319,8 @@ class MarketController extends Controller
 
         request()->validate([
             'image' => ['required', 'image', 'mimes:png', 'max:2048'],
-            'title' => ['required', 'min:3', 'max:64'],
-            'description' => ['max:2048'],
+            'title' => ['required', 'min:3', 'max:64', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i'],
+            'description' => ['max:2048', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i'],
         ]);
 
         $realName = bin2hex(random_bytes(32));
@@ -317,13 +364,18 @@ class MarketController extends Controller
 
     public function comment(Request $request, Item $item)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(env('FLOOD_GATE'))))
         {
             return back()->with('error', 'You\'re doing that too fast!');
         }
 
         request()->validate([
-            'body' => ['required', 'string', 'min:3', 'max:120'],
+            'body' => ['required', 'string', 'min:3', 'max:120', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i'],
         ]);
 
         Comment::create([
@@ -341,6 +393,11 @@ class MarketController extends Controller
 
     public function buy_item(Item $item, $type)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         // action flood gate
         if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
         {
@@ -480,6 +537,11 @@ class MarketController extends Controller
 
     public function delete(Request $request, Item $item)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         // action flood gate
         if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
         {
@@ -505,6 +567,11 @@ class MarketController extends Controller
 
     public function list(Request $request, Item $item)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         // action flood gate
         if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
         {
@@ -540,6 +607,11 @@ class MarketController extends Controller
 
     public function unlist(Request $request, Item $item)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         // action flood gate
         if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
         {
@@ -576,6 +648,11 @@ class MarketController extends Controller
 
     public function buy_listing(Request $request, Item $item, ItemReseller $listing)
     {
+        if(Setting::where('market_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         // action flood gate
         if(!auth()->user()->action_flood_gate || auth()->user()->action_flood_gate > (Carbon::now()->subSeconds(env('ACTION_FLOOD_GATE'))))
         {

@@ -1,11 +1,11 @@
 <?php
 function obfuscate_email($email)
 {
-    $em   = explode("@",$email);
-    $name = implode('@', array_slice($em, 0, count($em)-1));
-    $len  = floor(strlen($name)/2);
+    $em   = explode("@", $email);
+    $name = implode('@', array_slice($em, 0, count($em) - 1));
+    $len  = floor(strlen($name) / 2);
 
-    return substr($name,0, $len) . str_repeat('*', $len) . "@" . end($em);
+    return substr($name, 0, $len) . str_repeat('*', $len) . "@" . end($em);
 }
 ?>
 
@@ -19,14 +19,10 @@ function obfuscate_email($email)
 
             <div class="flex-column mb-3 mb-md-0">
                 <div class="nav nav-pills me-sm-3 card p-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home"
-                            type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">General</button>
-                    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile"
-                            type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Privacy</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages"
-                            type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Security</button>
-                    <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings"
-                            type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Connections</button>
+                    <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">General</button>
+                    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Privacy</button>
+                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Security</button>
+                    <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Connections</button>
                 </div>
                 <div class="card me-sm-3 mt-3 p-3 text-center text-small">
                     <h3><i class="bi bi-patch-question-fill"></i></h3>
@@ -121,16 +117,16 @@ function obfuscate_email($email)
                 <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
                     <h5 class="mb-2">Connections</h5>
                     @if(auth()->user()->hasLinkedDiscord())
-                        <div class="d-inline-block rounded border-1 border-dark border p-2">
-                            <div class="d-inline-block"><img src="https://cdn.discordapp.com/avatars/{{ auth()->user()->discord->id }}/{{ auth()->user()->discord->avatar }}.webp?size=32" alt="{{ auth()->user()->discord->username }}#{{ auth()->user()->discord->discriminator }}" class="img-fluid rounded-circle"></div>
-                            <div class="d-inline-block">{{ auth()->user()->discord->username }}<span class="text-muted">#{{ auth()->user()->discord->discriminator }}</span></div>
-                            <a href="#" class="text-danger text-sm" onclick="event.preventDefault();document.getElementById('unlink-discord').submit();">Unlink</a>
-                            <form method="POST" id="unlink-discord" action="{{ route('discord.unlink') }}" class="d-none">
-                                @csrf
-                            </form>
-                        </div>
+                    <div class="d-inline-block rounded border-1 border-dark border p-2">
+                        <div class="d-inline-block"><img src="https://cdn.discordapp.com/avatars/{{ auth()->user()->discord->id }}/{{ auth()->user()->discord->avatar }}.webp?size=32" alt="{{ auth()->user()->discord->username }}#{{ auth()->user()->discord->discriminator }}" class="img-fluid rounded-circle"></div>
+                        <div class="d-inline-block">{{ auth()->user()->discord->username }}<span class="text-muted">#{{ auth()->user()->discord->discriminator }}</span></div>
+                        <a href="#" class="text-danger text-sm" onclick="event.preventDefault();document.getElementById('unlink-discord').submit();">Unlink</a>
+                        <form method="POST" id="unlink-discord" action="{{ route('discord.unlink') }}" class="d-none">
+                            @csrf
+                        </form>
+                    </div>
                     @else
-                        <a href="{{ route('discord.connect') }}" class="btn btn-primary" style="background-color:#5865F2!important;"><i class="fa-brands fa-discord"></i> Discord</a>
+                    <a href="{{ route('discord.connect') }}" class="btn btn-primary" style="background-color:#5865F2!important;"><i class="fa-brands fa-discord"></i> Discord</a>
                     @endif
                 </div>
             </div>

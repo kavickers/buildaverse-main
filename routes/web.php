@@ -55,15 +55,17 @@ Route::domain('dev.brixoro.com')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/site/offline', 'maintenance')->name('maintenance.index');
         Route::get('/user/{user}', 'profile')->name('user.profile');
+        Route::get('/user/{user}/friends', 'friends')->name('user.friends');
         Route::get('/achievements', 'achievements')->name('achievements');
 
         /* Authenticated routes */
         Route::middleware(['auth'])->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
-            Route::get('/friends', 'friends')->name('user.friends');
+            Route::get('/friends', 'my_friends')->name('user.myfriends');
             Route::get('/account/settings', 'settings')->name('user.settings');
             Route::get('/money', 'money')->name('user.money');
 
+            Route::post('/account/blurb/update', 'post_blurb')->name('user.blurb.update');
             Route::post('/money/trade/cash', 'transfer_cash')->name('user.trade.cash');
             Route::post('/money/trade/coins', 'transfer_coins')->name('user.trade.coins');
             Route::post('/account/settings/general', 'update_settings_general')->name('user.settings.update.general');

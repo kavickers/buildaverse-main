@@ -27,7 +27,6 @@ return new class extends Migration
             $table->tinyInteger('forum_enabled')->default('1');
             $table->tinyInteger('posts_enabled')->default('1');
             $table->tinyInteger('register_enabled')->default('1');
-            $table->tinyInteger('beta_enabled')->default('1');
             $table->tinyInteger('maintenance_enabled')->default('1');
         });
     }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7d90d27032e222065e436e4cc1110a57",
+    "content-hash": "9f30ee4042090087406d350ce9550f78",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1916,6 +1916,59 @@
                 }
             ],
             "time": "2022-02-14T16:44:21+00:00"
+        },
+        {
+            "name": "m1guelpf/ghost-api",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/m1guelpf/php-ghost-api.git",
+                "reference": "558be324cd5c7b2310beba3d641d33a9a4b7c9cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/m1guelpf/php-ghost-api/zipball/558be324cd5c7b2310beba3d641d33a9a4b7c9cb",
+                "reference": "558be324cd5c7b2310beba3d641d33a9a4b7c9cb",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.1|^7.2",
+                "php": "^5.5|^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "6.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "M1guelpf\\GhostAPI\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Miguel Piedrafita",
+                    "email": "soy@miguelpiedrafita.com",
+                    "homepage": "https://miguelpiedrafita.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Client for the Ghost Content API",
+            "homepage": "https://github.com/m1guelpf/php-ghost-api",
+            "keywords": [
+                "Ghost",
+                "ghost-api",
+                "ghost-content-api",
+                "m1guelpf"
+            ],
+            "support": {
+                "issues": "https://github.com/m1guelpf/php-ghost-api/issues",
+                "source": "https://github.com/m1guelpf/php-ghost-api/tree/v1.1.1"
+            },
+            "time": "2021-02-13T21:10:35+00:00"
         },
         {
             "name": "monolog/monolog",

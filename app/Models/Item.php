@@ -76,7 +76,7 @@ class Item extends Model
     {
         if($this->special == 0)
         {
-            return -1;
+            return 1;
         }
         if($this->latest_copy() != null)
         {

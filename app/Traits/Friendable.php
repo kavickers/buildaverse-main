@@ -5,6 +5,8 @@ namespace App\Traits;
 use App\Models\Friendship;
 use Illuminate\Database\Eloquent\Model;
 
+use function PHPUnit\Framework\isEmpty;
+
 trait Friendable
 {
     /*|false
@@ -202,9 +204,19 @@ trait Friendable
     /**
      * @return \Illuminate\Database\Eloquent\Collection|Friendship[]
      */
-    public function getFriendRequests()
+    public function getFriendRequests($perPage = 0, $queryName = 'none')
     {
-        return Friendship::whereRecipient($this)->whereStatus('0')->get();
+        return $this->getOrPaginate($this->getFriendRequestsQueryBuilder(), $perPage, $queryName);
+    }
+
+    /**
+     * Get the query builder of the 'friend' model
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getFriendRequestsQueryBuilder()
+    {
+        return Friendship::whereRecipient($this)->whereStatus('0');
     }
 
     /**
@@ -215,9 +227,9 @@ trait Friendable
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getFriends($perPage = 0)
+    public function getFriends($perPage = 0, $queryName = 'none')
     {
-        return $this->getOrPaginate($this->getFriendsQueryBuilder(), $perPage);
+        return $this->getOrPaginate($this->getFriendsQueryBuilder(), $perPage, $queryName);
     }
 
     /**
@@ -228,9 +240,9 @@ trait Friendable
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getMutualFriends(Model $other, $perPage = 0)
+    public function getMutualFriends(Model $other, $perPage = 0, $queryName = 'none')
     {
-        return $this->getOrPaginate($this->getMutualFriendsQueryBuilder($other), $perPage);
+        return $this->getOrPaginate($this->getMutualFriendsQueryBuilder($other), $perPage, $queryName);
     }
 
     /**
@@ -251,9 +263,9 @@ trait Friendable
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getFriendsOfFriends($perPage = 0)
+    public function getFriendsOfFriends($perPage = 0, $queryName = 'none')
     {
-        return $this->getOrPaginate($this->friendsOfFriendsQueryBuilder(), $perPage);
+        return $this->getOrPaginate($this->friendsOfFriendsQueryBuilder(), $perPage, $queryName);
     }
 
 
@@ -419,11 +431,16 @@ trait Friendable
         return $this->morphMany(Friendship::class, 'sender');
     }
 
-    protected function getOrPaginate($builder, $perPage)
+    protected function getOrPaginate($builder, $perPage, $queryName)
     {
         if ($perPage == 0) {
             return $builder->get();
         }
-        return $builder->paginate($perPage);
+        
+        if ($queryName == 'none') {
+            return $builder->paginate($perPage);
+        }
+
+        return $builder->paginate($perPage, ['*'], $queryName);
     }
 }

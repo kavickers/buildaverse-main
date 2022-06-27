@@ -160,13 +160,13 @@
                             <hr class="dropdown-divider mb-0">
                         </li>
                         @if(auth()->user()->getFriendRequests()->count() >= 1)
-                            @foreach(auth()->user()->getFriendRequests()->take(5) as $request)
+                            @foreach(auth()->user()->getFriendRequests(5) as $request)
                                 <li class="notif">
                                     <div class="d-flex pt-3 border-bottom w-100">
                                         <a href="#"><img class="notif-pfp" src="{{ asset('img/avatar/headshot.png') }}"></a>
                                         <div class="pb-3 mb-0 small lh-sm w-100 notif-text">
                                             <div class="text-light">
-                                                From <a href="#" class="text-light"><strong>{{ $request->sender->username }}</strong></a><span class="text-muted"> • {{ $request->created_at->diffForHumans() }}</span>
+                                                From <a href="{{ route('user.profile', $request->sender->id) }}" class="text-light"><strong>{{ $request->sender->username }}</strong></a><span class="text-muted"> • {{ $request->created_at->diffForHumans() }}</span>
                                             </div>
                                             <a class="text-success" onclick="event.preventDefault();document.getElementById('accept-{{ $request->sender->id }}').submit();" style="cursor:pointer;">Accept</a> or <a class="text-danger" onclick="event.preventDefault();document.getElementById('decline-{{ $request->sender->id }}').submit();" style="cursor:pointer;">Decline</a>
                                             <form method="POST" id="accept-{{ $request->sender->id }}" action="{{ route('user.friends.accept', $request->sender->id) }}" class="d-none">
@@ -184,11 +184,13 @@
 							<div class="dropdown-item-text notif-info">
 
                                 @if(auth()->user()->getFriendRequests()->count() >= 1)
-                                    <a href="#">View All</a>&nbsp;&nbsp;
+                                    <a href="{{ route('user.myfriends') }}">View All</a>&nbsp;&nbsp;
                                     <a href="#" type="button" data-bs-toggle="modal" data-bs-target="#acceptFriendsModal">Accept All</a>&nbsp;&nbsp;
                                     <a href="#" type="button"data-bs-toggle="modal" data-bs-target="#declineFriendsModal">Decline All</a>
                                 @else
                                     You're all caught up!
+                                    <br/>
+                                    <a href="{{ route('user.myfriends') }}">View All</a>
                                 @endif
 							</div>
 						</li>

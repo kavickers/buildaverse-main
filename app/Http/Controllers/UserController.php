@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserNotification;
+use App\Helpers\GhostBlog;
+use App\Models\Blurb;
 use App\Models\Friend;
 use App\Models\Privacy;
 use App\Models\ProfileView;
+use App\Models\Setting;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,9 +29,43 @@ class UserController extends Controller
         }
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
-        return view('dashboard');
+        $blurbs = auth()->user()->get_feed();
+
+        $posts = GhostBlog::latest(4);
+
+        if($request->ajax() && !$blurbs->isEmpty())
+        {
+            $view = view('components.load_user_feed', compact('blurbs'))->render();
+            return response()->json(['html' => $view]);
+        }
+
+        return view('dashboard', compact(['blurbs', 'posts']));
+    }
+
+    public function post_blurb(Request $request)
+    {
+        if(!auth()->user()->flood_gate || auth()->user()->flood_gate > (Carbon::now()->subSeconds(env('FLOOD_GATE'))))
+        {
+            return back()->withInput()->with('error', 'Please wait '. env('FLOOD_GATE') . ' seconds before making another post.');
+        }
+
+        $request->validate([
+            'text' => ['required', 'max:140', 'min:3', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i'],
+        ]);
+
+        Blurb::create([
+            'author_id' => auth()->id(),
+            'author_type' => 1,
+            'text' => request('text'),
+        ]);
+
+        $flood = auth()->user();
+        $flood->flood_gate = Carbon::now();
+        $flood->save();
+
+        return back()->with('success', 'Successfully updated status!');
     }
 
     public function maintenance()
@@ -82,12 +119,28 @@ class UserController extends Controller
         }
     }
 
-    public function friends()
+    public function friends(Request $request, User $user)
+    {
+        if($user && $user->deleted == 0)
+        {
+            if(auth()->user()->id == $user->id)
+            {
+                return redirect(route('user.myfriends'));
+            }
+            $friends = $user->getFriends(9);
+
+            return view('user.friends', compact(['user', 'friends']));
+        } else {
+            return abort(404);
+        }
+    }
+
+    public function my_friends(Request $request)
     {
         $requests = Auth::user()->getFriendRequests();
-        $friends = Auth::user()->getFriends();
+        $friends = Auth::user()->getFriends(9, 'friends');
 
-        return view('user.friends', compact(['requests', 'friends']));
+        return view('user.myfriends', compact(['requests', 'friends']));
     }
 
     public function add_friend(User $user)

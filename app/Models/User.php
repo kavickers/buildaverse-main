@@ -83,7 +83,7 @@ class User extends Authenticatable
 
     public function get_feed()
     {
-        $blurbs = Blurb::whereIn('author_id', auth()->user()->getFriends()->pluck('id'))->where('scrubbed', '=', '0')->latest()->paginate(15);
+        $blurbs = Blurb::whereIn('author_id', auth()->user()->getFriends()->pluck('id'))->orWhere('author_id', auth()->user()->id)->where('scrubbed', '=', '0')->latest()->paginate(15);
         return $blurbs;
     }
 

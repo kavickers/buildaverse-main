@@ -62,7 +62,7 @@
 
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <h4 class="mb-0">Friends</h4>
-                <span class="text-bold"><a href="#" class="text-decoration-none">View all</a></span>
+                <span class="text-bold"><a href="{{ route('user.friends', $user->id) }}" class="text-decoration-none">View all</a></span>
             </div>
             <div class="card mb-4">
                 <div class="card-body text-center">

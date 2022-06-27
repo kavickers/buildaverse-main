@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Avatar;
 use App\Models\Item;
+use App\Models\Setting;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -55,6 +56,11 @@ class AvatarsController extends Controller
 
     public function render(User $user)
     {
+        if(Setting::where('avatar_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+
         if($user->exists() && $user->avatar()->exists())
         {
             //make sure the user avatar wasn't rendered too quickly
@@ -170,6 +176,11 @@ class AvatarsController extends Controller
 
     public function market(Item $item)
     {
+        if(Setting::where('avatar_enabled', '0')->get()->first())
+        {
+            return abort('403');
+        }
+        
         if($item->exists())
         {
             //debug mode

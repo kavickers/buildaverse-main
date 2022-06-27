@@ -1,11 +1,11 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '131c883d17b0b256bc6d18cf509d4c579bce4e11',
+        'reference' => '2165bb1a771ebb46bee84f9003c53cd2d5910657',
         'name' => 'laravel/laravel',
         'dev' => true,
     ),
@@ -401,12 +401,12 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '131c883d17b0b256bc6d18cf509d4c579bce4e11',
+            'reference' => '2165bb1a771ebb46bee84f9003c53cd2d5910657',
             'dev_requirement' => false,
         ),
         'laravel/sail' => array(
@@ -506,6 +506,15 @@
             'install_path' => __DIR__ . '/../livewire/livewire',
             'aliases' => array(),
             'reference' => 'f7150a3d0386c1d41f51b73a161e3d3e24db5812',
+            'dev_requirement' => false,
+        ),
+        'm1guelpf/ghost-api' => array(
+            'pretty_version' => 'v1.1.1',
+            'version' => '1.1.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../m1guelpf/ghost-api',
+            'aliases' => array(),
+            'reference' => '558be324cd5c7b2310beba3d641d33a9a4b7c9cb',
             'dev_requirement' => false,
         ),
         'mockery/mockery' => array(

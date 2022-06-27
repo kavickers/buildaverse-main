@@ -113,6 +113,7 @@ class ComposerStaticInit4c462552001d5293d7c38f034ad323cc
         'M' => 
         array (
             'Monolog\\' => 8,
+            'M1guelpf\\GhostAPI\\' => 18,
         ),
         'L' => 
         array (
@@ -389,6 +390,10 @@ class ComposerStaticInit4c462552001d5293d7c38f034ad323cc
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'M1guelpf\\GhostAPI\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/m1guelpf/ghost-api/src',
+        ),
         'Livewire\\' => 
         array (
             0 => __DIR__ . '/..' . '/livewire/livewire/src',
@@ -559,6 +564,7 @@ class ComposerStaticInit4c462552001d5293d7c38f034ad323cc
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Events\\UserNotification' => __DIR__ . '/../..' . '/app/Events/UserNotification.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Controllers\\API\\AvatarsController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/AvatarsController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
@@ -588,6 +594,7 @@ class ComposerStaticInit4c462552001d5293d7c38f034ad323cc
         'App\\Http\\Middleware\\checkIfIpBanned' => __DIR__ . '/../..' . '/app/Http/Middleware/checkIfIpBanned.php',
         'App\\Http\\Middleware\\dailyCurrency' => __DIR__ . '/../..' . '/app/Http/Middleware/dailyCurrency.php',
         'App\\Http\\Middleware\\logIps' => __DIR__ . '/../..' . '/app/Http/Middleware/logIps.php',
+        'App\\Models\\Avatar' => __DIR__ . '/../..' . '/app/Models/Avatar.php',
         'App\\Models\\BaseModel' => __DIR__ . '/../..' . '/app/Models/BaseModel.php',
         'App\\Models\\Blurb' => __DIR__ . '/../..' . '/app/Models/Blurb.php',
         'App\\Models\\Category' => __DIR__ . '/../..' . '/app/Models/Category.php',
@@ -605,6 +612,7 @@ class ComposerStaticInit4c462552001d5293d7c38f034ad323cc
         'App\\Models\\Ip' => __DIR__ . '/../..' . '/app/Models/Ip.php',
         'App\\Models\\IpBan' => __DIR__ . '/../..' . '/app/Models/IpBan.php',
         'App\\Models\\Item' => __DIR__ . '/../..' . '/app/Models/Item.php',
+        'App\\Models\\ItemData' => __DIR__ . '/../..' . '/app/Models/ItemData.php',
         'App\\Models\\ItemReseller' => __DIR__ . '/../..' . '/app/Models/ItemReseller.php',
         'App\\Models\\Post' => __DIR__ . '/../..' . '/app/Models/Post.php',
         'App\\Models\\Privacy' => __DIR__ . '/../..' . '/app/Models/Privacy.php',
@@ -3274,6 +3282,7 @@ class ComposerStaticInit4c462552001d5293d7c38f034ad323cc
         'Livewire\\Wireable' => __DIR__ . '/..' . '/livewire/livewire/src/Wireable.php',
         'Livewire\\WithFileUploads' => __DIR__ . '/..' . '/livewire/livewire/src/WithFileUploads.php',
         'Livewire\\WithPagination' => __DIR__ . '/..' . '/livewire/livewire/src/WithPagination.php',
+        'M1guelpf\\GhostAPI\\Ghost' => __DIR__ . '/..' . '/m1guelpf/ghost-api/src/Ghost.php',
         'Mockery' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegration.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegrationAssertPostConditions' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegrationAssertPostConditions.php',

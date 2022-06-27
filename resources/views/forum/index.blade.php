@@ -23,7 +23,7 @@
                         @foreach($topics as $topic)
                             @if($topic->category_id == $category->id)
                                 <li>
-                                    <a class="dropdown-item @if(isset($_GET['topic']) && $_GET['topic'] == $topic->id) active @endif" href="?topic={{ $topic->id }}">{{ $topic->name }}</a>
+                                    <a class="dropdown-item @if(isset($_GET['topic']) && $_GET['topic'] == $topic->id) active @endif" href="?topic={{ $topic->id }}"><i class="fa-solid fa-circle" style="color:{{ $topic->color }};margin-right:1px;"></i> {{ $topic->name }}</a>
                                 </li>
                             @endif
                         @endforeach
