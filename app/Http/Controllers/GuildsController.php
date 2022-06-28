@@ -56,9 +56,9 @@ class GuildsController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|min:3|max:64|regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i',
-            'desc' => 'max:2048|regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i',
-            'image' => 'required|image|mimes:png|max:2048',
+            'name' => 'required|min:3|max:40|regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i|unique:guilds',
+            'desc' => 'max:2048|regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i|nullable',
+            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
         $realName = bin2hex(random_bytes(32));
@@ -78,9 +78,76 @@ class GuildsController extends Controller
             'thumbnail_url' => $realName,
         ]);
 
-        GuildRank::create([]); // create default ranks
-        GuildMember::create([]); // add the owner as the default member of the group
+        GuildRank::insert([
+            [
+                'guild_id' => $guild->id,
+                'name' => 'Owner',
+                'rank' => 255,
+                'can_view_wall' => true,
+                'can_post_on_wall' => true,
+                'can_moderate_wall' => true,
+                'can_view_audit' => true,
+                'can_advertise' => true,
+                'can_change_ranks' => true,
+                'can_kick_members' => true,
+                'can_accept_members' => true,
+                'can_post_announcements' => true,
+                'can_spend_funds' => true,
+                'can_create_items' => true,
+                'can_edit_games' => true,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'guild_id' => $guild->id,
+                'name' => 'Admin',
+                'rank' => 254,
+                'can_view_wall' => true,
+                'can_post_on_wall' => true,
+                'can_moderate_wall' => true,
+                'can_view_audit' => true,
+                'can_advertise' => true,
+                'can_change_ranks' => true,
+                'can_kick_members' => false,
+                'can_accept_members' => true,
+                'can_post_announcements' => true,
+                'can_spend_funds' => false,
+                'can_create_items' => true,
+                'can_edit_games' => false,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'guild_id' => $guild->id,
+                'name' => 'Member',
+                'rank' => 1,
+                'can_view_wall' => true,
+                'can_post_on_wall' => true,
+                'can_moderate_wall' => false,
+                'can_view_audit' => false,
+                'can_advertise' => false,
+                'can_change_ranks' => false,
+                'can_kick_members' => false,
+                'can_accept_members' => false,
+                'can_post_announcements' => false,
+                'can_spend_funds' => false,
+                'can_create_items' => false,
+                'can_edit_games' => false,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]); // create default ranks
+        GuildMember::create([
+            'guild_id' => $guild->id,
+            'user_id' => auth()->user()->id,
+            'rank' => 255,
+        ]); // add the owner as the default member of the group
 
-        return 'created'; // created group success
+        $flood = auth()->user();
+        $flood->flood_gate = Carbon::now();
+        $flood->save();
+
+        return redirect(route('guilds.view', $guild->id)); // created group success
+        
     }
 }

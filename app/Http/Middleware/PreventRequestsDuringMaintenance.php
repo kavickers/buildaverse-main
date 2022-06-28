@@ -51,8 +51,8 @@ class PreventRequestsDuringMaintenance extends Middleware
             !in_array($request->getClientIp(), [
                 '97.92.205.231', //kyle
                 '104.189.145.55', //jordan
-                '2607:fb90:ae83:c00f:b99f:fbe9:5040:a411', //sid
-                '166.194.132.117',
+                '68.35.160.15', //sid
+                '166.194.132.36',
             ]))
         {
             if(url()->current() != "https://dev.brixoro.com/site/offline")

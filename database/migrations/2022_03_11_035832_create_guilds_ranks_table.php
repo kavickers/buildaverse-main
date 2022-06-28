@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('guilds_ranks', function (Blueprint $table) {
             $table->id(); 
             $table->bigInteger('guild_id');
-            $table->string('name');
+            $table->string('name'); 
             $table->integer('rank');
             $table->boolean('can_view_wall')->default(true);
             $table->boolean('can_post_on_wall')->default(true);

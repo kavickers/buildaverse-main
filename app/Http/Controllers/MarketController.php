@@ -262,7 +262,7 @@ class MarketController extends Controller
 
         $request->validate([
             'title' => 'required|min:3|max:64|regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i',
-            'description' => 'max:2048|regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i',
+            'description' => 'max:2048|regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i|nullable',
             'image' => 'required|image|mimes:png|max:2048',
         ]);
 
@@ -320,7 +320,7 @@ class MarketController extends Controller
         request()->validate([
             'image' => ['required', 'image', 'mimes:png', 'max:2048'],
             'title' => ['required', 'min:3', 'max:64', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&]+$/i'],
-            'description' => ['max:2048', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i'],
+            'description' => ['max:2048', 'regex:/^[a-z0-9 .\-!,\':;<>?()\[\]+=\/#$&\t\n\r]+/i', 'nullable'],
         ]);
 
         $realName = bin2hex(random_bytes(32));
