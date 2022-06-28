@@ -25,7 +25,14 @@ class Guild extends Model
 
     public function thumbnail()
     {
-        return "1";
+        if($this->is_thumbnail_pending == 1)
+        {
+            return asset('img/market/pending.png');
+        } elseif($this->is_thumbnail_pending == 2) {
+            return asset('img/market/denied.png');
+        } else {
+            return "https://cdn.buildaverse.net/".$this->thumbnail_url;
+        }
     }
 
     public function members()
@@ -36,5 +43,38 @@ class Guild extends Model
     public function ranks()
     {
         return GuildRank::where('guild_id', '=', $this->id)->orderBy('rank', 'ASC')->get();
+    }
+
+    public function get_short_num($num) {
+        if ($num < 999) {
+            return $num;
+        }
+        else if ($num > 999 && $num <= 9999) {
+            $new_num = substr($num, 0, 1);
+            return $new_num.'K+';
+        }
+        else if ($num > 9999 && $num <= 99999) {
+            $new_num = substr($num, 0, 2);
+            return $new_num.'K+';
+        }
+        else if ($num > 99999 && $num <= 999999) {
+            $new_num = substr($num, 0, 3);
+            return $new_num.'K+';
+        }
+        else if ($num > 999999 && $num <= 9999999) {
+            $new_num = substr($num, 0, 1);
+            return $new_num.'M+';
+        }
+        else if ($num > 9999999 && $num <= 99999999) {
+            $new_num = substr($num, 0, 2);
+            return $new_num.'M+';
+        }
+        else if ($num > 99999999 && $num <= 999999999) {
+            $new_num = substr($num, 0, 3);
+            return $new_num.'M+';
+        }
+        else {
+            return $num;
+        }
     }
 }

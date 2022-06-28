@@ -83,7 +83,7 @@ class Transaction extends Model
         } elseif($this->type == 3) {
             return 'Community Payout';
         } elseif($this->type == 4) {
-            return 'Premium Stipend';
+            return 'Daily Stipend';
         } elseif($this->type == 5) {
             return 'Currency Purchase';
         }

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="title">Page Title</x-slot>
+    <x-slot name="title">Create Community</x-slot>
     <x-slot name="navigation"></x-slot>
     <div class="row justify-content-center">
         <div class="col-md-6">

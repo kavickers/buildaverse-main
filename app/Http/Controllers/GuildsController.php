@@ -20,9 +20,14 @@ class GuildsController extends Controller
         return view('guilds.index');
     }
 
-    public function view()
+    public function view(Request $request, Guild $guild)
     {
-        return view('guilds.view');
+        if($guild && $guild->is_locked == 0)
+        {
+            return view('guilds.view', compact(['guild']));
+        } else {
+            return abort(404);
+        }
     }
 
     public function search()
@@ -75,7 +80,7 @@ class GuildsController extends Controller
             'owner_id' => auth()->user()->id,
             'name' => request('name'),
             'desc' => request('desc'),
-            'thumbnail_url' => $realName,
+            'thumbnail_url' => $imageName,
         ]);
 
         GuildRank::insert([

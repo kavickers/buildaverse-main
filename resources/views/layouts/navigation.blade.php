@@ -339,7 +339,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link sidebar-icon @if(request()->is('community*')) side-nav-active @endif my-3 py-0" title="Communities" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Communities">
+                <a href="{{ route('guilds.index') }}" class="nav-link sidebar-icon @if(request()->is('communities*')) side-nav-active @endif my-3 py-0" title="Communities" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Communities">
                     <h4 class="m-0"><i class="bi bi-person-video2"></i></h4>
                 </a>
             </li>
@@ -421,7 +421,7 @@
                     <li><a class="dropdown-item" href="#"><i class="bi bi-bell"></i> Notifications<span class="badge rounded-pill bg-primary notif-badge">2</span></a></li>
                     <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-left-right"></i> Incoming Trades<span class="badge rounded-pill bg-primary notif-badge">2</span></a></li>
                     <li>
-                        <a class="dropdown-item" href="#"><i class="bi bi-people"></i> Friend Requests
+                        <a class="dropdown-item" href="{{ route('user.myfriends') }}"><i class="bi bi-people"></i> Friend Requests
                             @if(auth()->user()->getPendingsCount() > 0)
                                 @if(auth()->user()->getPendingsCount() < 100)
                                     <span class="badge rounded-pill bg-primary notif-badge">{{ auth()->user()->getPendingsCount() }}</span>

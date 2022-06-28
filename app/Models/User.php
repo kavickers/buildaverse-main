@@ -313,6 +313,22 @@ class User extends Authenticatable
         return GuildMember::where('user_id', '=', auth()->user()->id)->count();
     }
 
+    public function isInGuild($guildId)
+    {
+        return GuildMember::where([
+            ['user_id', '=', $this->id],
+            ['guild_id', '=', $guildId]
+        ])->exists();
+    }
+
+    public function rankInGuild($guildId)
+    {
+        return GuildMember::where([
+            ['user_id', '=', $this->id],
+            ['guild_id', '=', $guildId]
+        ])->first()->rank();
+    }
+
     public function badges()
     {
         $badges = UserBadge::where('user_id', '=', $this->id)->get();

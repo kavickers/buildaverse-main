@@ -1,216 +1,638 @@
-@extends('layouts.app')
-
-@section('title', 'Guild Name')
-
-@section('content')
-    <div class="row row-eq-spacing justify-content-center">
-        <div class="col-12">
-            <div class="card p-5 pl-15 pr-15 m-0 h-50">
-                <span class="font-size-24 mb-5 text-left">username's Guild</span>
-                <div class="float-right align-middle hidden-md-and-down">
-                    <p class="p-0 m-0 font-size-24">Vault:
-                        <span class="ml-10"></span>
-                        <i class="font-size-18 cash fas fa-money-bill"></i>
-                        <span class="font-size-18 font-weight-semi-bold mr-10">100</span>
-                        <i class="font-size-18 coin fas fa-coins"></i>
-                        <span class="font-size-18 font-weight-semi-bold">1K+</span>
-                    </p>
+<x-app-layout>
+    <x-slot name="title">{{ $guild->name }}</x-slot>
+    <x-slot name="navigation"></x-slot>
+    <div class="card p-3 px-4 mb-3 text-center text-md-start">
+        <div class="d-md-flex justify-content-between align-items-center">
+            <div class="mb-3 mb-md-0">
+                <div class="text-3xl fw-semibold">{{ $guild->name }}</div>
+                <div class="text-muted">
+                    Creator: <a href="{{ route('user.profile', $guild->owner->id) }}" class="fw-semibold">{{ $guild->owner->username }}</a>
                 </div>
             </div>
+            @if($guild->is_vault_viewable)
+                <div class="text-center">
+                    <div class="text-bold">
+                        <span class="text-success text-xl me-2">
+                            <i class="bi bi-cash-stack text-2xl me-1 align-middle"></i> {{ $guild->get_short_num($guild->cash) }}
+                        </span>
+                        <span class="text-warning text-xl">
+                            <i class="bi bi-coin text-2xl me-1 align-middle"></i> {{ $guild->get_short_num($guild->coins) }}
+                        </span>
+                    </div>
+                    <div class="text-muted">VAULT</div>
+                </div>
+            @endif
         </div>
-        <div class="v-spacer"></div>
-        <div class="col-md-3 text-center">
-            <div class="card p-0 m-0 h-250">
-                <img src="/static/img/bv_dark.png" class="img-fluid">
-            </div>
-
-            <h5 class="mb-5">Owner: <a href="#">username</a></h5>
-
-            <a href="#" class="no-style">
-                <div class="card guild-button guild-active">
-                    <p class="font-weight-semi-bold p-10 m-10 text-white">Home</p>
-                </div>
-            </a>
-            <a href="#" class="no-style">
-                <div class="card guild-button">
-                    <p class="font-weight-semi-bold p-10 m-10 text-white">Members</p>
-                </div>
-            </a>
-            <a href="#" class="no-style">
-                <div class="card guild-button">
-                    <p class="font-weight-semi-bold p-10 m-10 text-white">Relations</p>
-                </div>
-            </a>
-            <a href="#" class="no-style">
-                <div class="card guild-button">
-                    <p class="font-weight-semi-bold p-10 m-10 text-white">Market</p>
-                </div>
-            </a>
-            <br>
-            <div class="card p-0 m-0">
-                <div class="row">
-                    <div class="col-12 text-left">
-                        <h5 class="p-0 m-0 ml-10 mt-10">Statistics</h5>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <img src="{{ $guild->thumbnail() }}" class="img-fluid p-5 pb-3" />
+                <div class="row text-center justify-content-center p-3">
+                    <div class="col-6">
+                        <div class="text-bold text-xl">{{ $guild->get_short_num($guild->members()->count()) }}</div>
+                        <div class="text-muted">MEMBERS</div>
                     </div>
-                </div>
-                <div class="m-0 mt-10 p-0 border-bottom"></div>
-                <div id="statisticsSlides" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <h4 class="mb-0 mt-10">635</h4>
-                            <p class="mt-0">members</p>
-                        </div>
-                        <div class="carousel-item">
-                            <h4 class="mb-0 mt-10">25</h4>
-                            <p class="mt-0">items</p>
-                        </div>
-                        <div class="carousel-item">
-                            <h4 class="mb-0 mt-10">3</h4>
-                            <p class="mt-0">worlds</p>
-                        </div>
-                        <div class="carousel-item">
-                            <h4 class="mb-0 mt-10">165K+</h4>
-                            <p class="mt-0">visits</p>
-                        </div>
-                    </div>
-                    <a class="carousel-control-prev" href="#statisticsSlides" role="button" data-slide="prev">
-                        <i class="font-size-18 text-white fas fa-arrow-left"></i>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#statisticsSlides" role="button" data-slide="next">
-                        <i class="font-size-18 text-white fas fa-arrow-right"></i>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="card p-5 h-250 overflow-scroll">
-                <p class="p-card pt-5 pb-0">This is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omgThis is the description of the guild omg</p>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-6 pr-md-15">
-                    <div class="card m-0 p-0 p-20 h-300">
-                        <div class="pb-5">
-                            <h4 class="card-title mb-0">Latest Announcement</h4>
-                        </div>
-                        @auth
-                        <form action="#" method="POST" class="pb-15">
-                            @csrf
-                            <div class="input-group">
-                                <input type="text" name="announcement" class="form-control" placeholder="Enter new announcement here...">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button">Submit</button>
-                                </div>
-                            </div>
-                        </form>
-                        @endauth
-                        <div class="row">
-                            <div class="col-4">
-                                <img class="img-fluid w-250" src="/static/img/avatar.png">
-                            </div>
-                            <div class="col-8">
-                                <div class="box p-left top w-auto p-0 pl-20 pr-20 mb-5 m-0 mt-20 ml-10">
-                                    <p>announcement text!! just wait w aitwai twaitwa it waitwaitwai t wait wait wait waitwai t wai twait wait wa it wawaitwait wai wait twa wait waitwait wait wait wait it it :)))</p>
-                                </div>
-                                <small class="m-0 ml-10"><a href="#">Username</a>, 37 minutes ago</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="v-spacer hidden-md-and-up"></div>
-                <div class="col-sm-12 col-md-6 pl-md-15">
-                    <div class="card m-0 h-300">
-                        <div id="worldsSlides" class="carousel slide" data-ride="carousel">
-                            <ol class="carousel-indicators">
-                                <li data-target="#worldsSlides" data-slide-to="0" class="active"></li>
-                                <li data-target="#worldsSlides" data-slide-to="1"></li>
-                                <li data-target="#worldsSlides" data-slide-to="2"></li>
-                            </ol>
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="/static/img/thumbnail.png" class="d-block img-fluid">
-                                    <div class="carousel-caption d-none d-md-block">
-                                        <a href="#" class="no-style">
-                                            <h4 class="mb-0">World Name</h4>
-                                        </a>
-                                        <p class="mt-0">153 users online</p>
-                                    </div>
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="/static/img/thumbnail.png" class="d-block img-fluid">
-                                    <div class="carousel-caption d-none d-md-block">
-                                        <a href="#" class="no-style">
-                                            <h4 class="mb-0 text-truncate">World Name</h4>
-                                        </a>
-                                        <p class="mt-0">365 users online</p>
-                                    </div>
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="/static/img/thumbnail.png" class="d-block img-fluid">
-                                    <div class="carousel-caption d-none d-md-block">
-                                        <a href="#" class="no-style">
-                                            <h4 class="mb-0 text-truncate">World Name</h4>
-                                        </a>
-                                        <p class="mt-0">25 users online</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <a class="carousel-control-prev" href="#worldsSlides" role="button" data-slide="prev">
-                                <i class="font-size-24 text-white fas fa-chevron-left"></i>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#worldsSlides" role="button" data-slide="next">
-                                <i class="font-size-24 text-white fas fa-chevron-right"></i>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card p-0 mt-40">
-                <div class="card-header">
-                    <div class="font-size-14 font-weight-medium">Wall</div>
-                </div>
-                <div class="p-0">
                     @auth
-                        <div class="border-top p-10">
-                            <form method="POST" action="#">
-                                @csrf
-                                <div class="mb-10">
-                                    <textarea class="form-control" name="body" id="post" placeholder="Enter post here..."></textarea>
-                                </div>
-                                <div class="text-right">
-                                    <input class="btn btn-primary btn-sm" type="submit" value="Post">
-                                </div>
-                            </form>
-                        </div>
+                        @if(auth()->user()->isInGuild($guild->id))
+                            <div class="col-6">
+                                <div class="text-bold text-xl truncate">{{ auth()->user()->rankInGuild($guild->id)->name }}</div>
+                                <div class="text-muted">MY RANK</div>
+                            </div>
+                        @endif
                     @endauth
-                        <div class="text-center border-top p-10">
-                            <p>No posts found</p>
+                </div>
+            </div>
+            <div class="nav flex-column nav-pills mb-3 mb-md-0" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="pill" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
+                    Home
+                </button>
+                <button class="nav-link" id="members-tab" data-bs-toggle="pill" data-bs-target="#members" type="button" role="tab" aria-controls="members" aria-selected="false">
+                    Members
+                </button>
+                <button class="nav-link" id="relations-tab" data-bs-toggle="pill" data-bs-target="#relations" type="button" role="tab" aria-controls="Relations" aria-selected="false">
+                    Relations
+                </button>
+                <button class="nav-link" id="market-tab" data-bs-toggle="pill" data-bs-target="#market" type="button" role="tab" aria-controls="Market" aria-selected="false">
+                    Market
+                </button>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane show active" id="home" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <div class="card card-body mb-3" style="height: 315px; overflow-y: scroll">
+                    @if($guild->desc != null)
+                        {!! nl2br(e($guild->desc)) !!}
+                    @else
+                        No description set.
+                    @endif
+                </div>
+                    <h4>Latest Announcement</h4>
+                    <div class="card card-body mb-3">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="#" class="text-center">
+                                    <img src="img/avatar/blocky.png" class="img-fluid mb-4 mb-md-0" />
+                                </a>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card card-announcement card-body mb-1">
+                                    hello there we are going to do a summon sid ritual please
+                                    make sure you're there by 3pm next wednesday!
+                                </div>
+                                <div class="text-sm text-muted">
+                                    Posted by <a href="#" class="fw-semibold">Sid</a>, 8 hours
+                                    ago
+                                </div>
+                            </div>
                         </div>
-                        <!-- Start comment -->
-                            <div class="p-10 border-top">
-                                <div class="comment-box">
-                                    <a href="#">
-                                        <img src="/static/img/headshot.png" class="rounded-circle avatar-bg w-64">
-                                    </a>
-                                    <div class="comment-text pl-80 pb-8">
-                                        <a href="#" class="float-right report"><i class="far fa-flag"></i></a>
-                                        <span class="font-size-13"><a href="#" class="font-weight-semi-bold">Username</a></span><span class="text-muted font-size-10 ml-5"><i class="fas fa-clock"></i> 1 minute ago</span>
-                                        <div class="font-size-14 mb-15">This is a default wall post! Hello there.</div>
-                                        <div class="text-right admin-link font-size-12">
-                                            <a href="https://antelope.is/guilds/#/wall/#delete" class="font-weight-normal">DELETE</a>
+                    </div>
+                    <h4>Worlds</h4>
+                    <div class="card card-body mb-3">
+                        <div id="carouselGameCaptions" class="carousel slide" data-bs-ride="false">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselGameCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselGameCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#carouselGameCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                <button type="button" data-bs-target="#carouselGameCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                            </div>
+                            <div class="carousel-inner rounded">
+                                <div class="carousel-item active">
+                                    <img src="img/games/game1.png" class="d-block w-100 bg-gray-500" alt="..." />
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Totally a Game</h5>
+                                        <p>
+                                            This is totally a description for a totally real game
+                                            :D
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="img/games/game2.png" class="d-block w-100 bg-gray-500" alt="..." />
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Totally a Game 2</h5>
+                                        <p>
+                                            A sequel to the totally-est of all games: Totally a
+                                            Game
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="img/games/game1.png" class="d-block w-100 bg-gray-500" alt="..." />
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Third game</h5>
+                                        <p>
+                                            Some representative placeholder content for the third
+                                            slide.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="img/games/game2.png" class="d-block w-100 bg-gray-500" alt="..." />
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Fourth game</h5>
+                                        <p>
+                                            Some representative placeholder content for the fourth
+                                            slide.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselGameCaptions" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselGameCaptions" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                    @auth
+                        @if(auth()->user()->isInGuild($guild->id))
+                            <h4>Community Wall</h4>
+                            <div class="card card-body">
+                                <div class="d-flex gap-2">
+                                    <input type="text" class="form-control" placeholder="What do you want to post to this community's wall?" />
+                                    <button type="submit" class="btn btn-success px-3">
+                                        Post
+                                    </button>
+                                </div>
+                                <hr class="mb-0" />
+                                <div class="section">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <img src="img/avatar/headshot.png" class="img-fluid rounded-circle headshot" width="86" />
+                                        <div class="w-100">
+                                            <a href="#" class="text-xl fw-semibold text-light">Kyle</a>
+                                            <div class="text-muted mb-2">
+                                                this item looks so nice but i was too lazy to
+                                                participate in the egg hunt so i didn't get it... sucks
+                                                to suck!
+                                            </div>
+                                            <div class="text-muted text-sm">Posted 8 minutes ago</div>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="text-xl bg-transparent border-0 p-0 text-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical text-xl"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                                <li>
+                                                    <span class="text-center dropdown-item-text notification-dropdown-title p-0">More</span>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider mb-1" />
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger" href="#">Report</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="section">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <img src="img/avatar/headshot.png" class="img-fluid rounded-circle headshot" width="86" />
+                                        <div class="w-100">
+                                            <a href="#" class="text-xl fw-semibold text-light">Kyle</a>
+                                            <div class="text-muted mb-2">
+                                                this item looks so nice but i was too lazy to
+                                                participate in the egg hunt so i didn't get it... sucks
+                                                to suck!
+                                            </div>
+                                            <div class="text-muted text-sm">Posted 8 minutes ago</div>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="text-xl bg-transparent border-0 p-0 text-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical text-xl"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                                <li>
+                                                    <span class="text-center dropdown-item-text notification-dropdown-title p-0">More</span>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider mb-1" />
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger" href="#">Report</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="section">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <img src="img/avatar/headshot.png" class="img-fluid rounded-circle headshot" width="86" />
+                                        <div class="w-100">
+                                            <a href="#" class="text-xl fw-semibold text-light">Kyle</a>
+                                            <div class="text-muted mb-2">
+                                                this item looks so nice but i was too lazy to
+                                                participate in the egg hunt so i didn't get it... sucks
+                                                to suck!
+                                            </div>
+                                            <div class="text-muted text-sm">Posted 8 minutes ago</div>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="text-xl bg-transparent border-0 p-0 text-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical text-xl"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                                <li>
+                                                    <span class="text-center dropdown-item-text notification-dropdown-title p-0">More</span>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider mb-1" />
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger" href="#">Report</a>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- End comment -->
-                        <!-- pagination -->
-                        <br>
-
+                        @endif
+                    @endauth
+                </div>
+                <div class="tab-pane" id="members" role="tabpanel" aria-labelledby="members-tab" tabindex="0">
+                    <h4>Members</h4>
+                    <div class="card p-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <select class="form-control">
+                                    @foreach ($guild->ranks() as $rank)
+                                        <option value="{{ $rank->rank }}">{{ $rank->name }} ({{ $rank->memberCount() }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                            <div class="col-3 text-center mb-3">
+                                <a href="#">
+                                    <img src="img/avatar/human.png" class="img-fluid mb-1" />
+                                </a>
+                                <a href="#" class="d-block truncate fw-semibold">c0ncrete</a>
+                            </div>
+                        </div>
+                        <nav class="mt-2">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">1</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">2</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">3</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="tab-pane" id="relations" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                    <h4>Relations</h4>
+                    <h5>Allies</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-body position-relative text-center mb-5">
+                                <a href="#">
+                                    <div class="community-icon rounded-circle overflow-hidden">
+                                        <img src="img/branding/dark_icon.svg" class="img-fluid" />
+                                    </div>
+                                    <div class="text-xl fw-semibold text-light mt-4">
+                                        Sid's Evil Lair
+                                        <span class="text-sm fw-normal text-muted">&bullet; 18k+ members</span>
+                                    </div>
+                                    <div class="text-muted fw-normal line-clamp">
+                                        join if u like sid and umm wanna write fanfictions about
+                                        him
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card card-body position-relative text-center mb-5">
+                                <a href="#">
+                                    <div class="community-icon rounded-circle overflow-hidden">
+                                        <img src="img/branding/dark_icon.svg" class="img-fluid" />
+                                    </div>
+                                    <div class="text-xl fw-semibold text-light mt-4">
+                                        Sid's Evil Lair
+                                        <span class="text-sm fw-normal text-muted">&bullet; 18k+ members</span>
+                                    </div>
+                                    <div class="text-muted fw-normal line-clamp">
+                                        join if u like sid and umm wanna write fanfictions about
+                                        him
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card card-body position-relative text-center mb-5">
+                                <a href="#">
+                                    <div class="community-icon rounded-circle overflow-hidden">
+                                        <img src="img/branding/dark_icon.svg" class="img-fluid" />
+                                    </div>
+                                    <div class="text-xl fw-semibold text-light mt-4">
+                                        Sid's Evil Lair
+                                        <span class="text-sm fw-normal text-muted">&bullet; 18k+ members</span>
+                                    </div>
+                                    <div class="text-muted fw-normal line-clamp">
+                                        join if u like sid and umm wanna write fanfictions about
+                                        him
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card card-body position-relative text-center mb-5">
+                                <a href="#">
+                                    <div class="community-icon rounded-circle overflow-hidden">
+                                        <img src="img/branding/dark_icon.svg" class="img-fluid" />
+                                    </div>
+                                    <div class="text-xl fw-semibold text-light mt-4">
+                                        Sid's Evil Lair
+                                        <span class="text-sm fw-normal text-muted">&bullet; 18k+ members</span>
+                                    </div>
+                                    <div class="text-muted fw-normal line-clamp">
+                                        join if u like sid and umm wanna write fanfictions about
+                                        him
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <h5>Enemies</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card card-body position-relative text-center mb-5">
+                                    <a href="#">
+                                        <div class="community-icon rounded-circle overflow-hidden">
+                                            <img src="img/branding/dark_icon.svg" class="img-fluid" />
+                                        </div>
+                                        <div class="text-xl fw-semibold text-light mt-4">
+                                            Sid's Evil Lair
+                                            <span class="text-sm fw-normal text-muted">&bullet; 18k+ members</span>
+                                        </div>
+                                        <div class="text-muted fw-normal line-clamp">
+                                            join if u like sid and umm wanna write fanfictions
+                                            about him
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card card-body position-relative text-center mb-5">
+                                    <a href="#">
+                                        <div class="community-icon rounded-circle overflow-hidden">
+                                            <img src="img/branding/dark_icon.svg" class="img-fluid" />
+                                        </div>
+                                        <div class="text-xl fw-semibold text-light mt-4">
+                                            Sid's Evil Lair
+                                            <span class="text-sm fw-normal text-muted">&bullet; 18k+ members</span>
+                                        </div>
+                                        <div class="text-muted fw-normal line-clamp">
+                                            join if u like sid and umm wanna write fanfictions
+                                            about him
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="market" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                    <h4>Community Market</h4>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card overflow-hidden position-relative h-100">
+                                <div class="d-flex d-md-block align-items-center">
+                                    <a href="#">
+                                        <img src="img/avatar/blocky.png" class="img-fluid item-preview d-none d-md-block p-3" />
+                                        <img src="img/avatar/blocky.png" class="img-fluid item-preview d-block d-md-none p-3" width="160" />
+                                    </a>
+                                    <div class="px-3 py-2 min-w-0">
+                                        <a href="#" class="text-xl fw-semibold text-light d-block truncate">sid fanfic shirt owo</a>
+                                        <div class="text-muted truncate text-sm mb-2">
+                                            Creator:
+                                            <a href="#" class="fw-semibold">Sid's Evil Lair</a>
+                                        </div>
+                                        <div class="text-md-center text-sm">
+                                            <span class="d-md-block text-success fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-cash-stack text-md me-1 align-middle"></i>10,000
+                                            </span>
+                                            <span class="d-md-block text-warning fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-coin text-md me-1 align-middle"></i>120,000
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card overflow-hidden position-relative h-100">
+                                <div class="d-flex d-md-block align-items-center">
+                                    <a href="#">
+                                        <img src="img/avatar/human.png" class="img-fluid item-preview d-none d-md-block p-3" />
+                                        <img src="img/avatar/human.png" class="img-fluid item-preview d-block d-md-none p-3" width="160" />
+                                    </a>
+                                    <div class="px-3 py-2 min-w-0">
+                                        <a href="#" class="text-xl fw-semibold text-light d-block truncate">sid fanfic shirt owo</a>
+                                        <div class="text-muted truncate text-sm mb-2">
+                                            Creator:
+                                            <a href="#" class="fw-semibold">Sid's Evil Lair</a>
+                                        </div>
+                                        <div class="text-md-center text-sm">
+                                            <span class="d-md-block text-success fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-cash-stack text-md me-1 align-middle"></i>10,000
+                                            </span>
+                                            <span class="d-md-block text-warning fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-coin text-md me-1 align-middle"></i>120,000
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card overflow-hidden position-relative h-100">
+                                <div class="d-flex d-md-block align-items-center">
+                                    <a href="#">
+                                        <img src="img/avatar/blocky.png" class="img-fluid item-preview d-none d-md-block p-3" />
+                                        <img src="img/avatar/blocky.png" class="img-fluid item-preview d-block d-md-none p-3" width="160" />
+                                    </a>
+                                    <div class="px-3 py-2 min-w-0">
+                                        <a href="#" class="text-xl fw-semibold text-light d-block truncate">sid fanfic shirt owo</a>
+                                        <div class="text-muted truncate text-sm mb-2">
+                                            Creator:
+                                            <a href="#" class="fw-semibold">Sid's Evil Lair</a>
+                                        </div>
+                                        <div class="text-md-center text-sm">
+                                            <span class="d-md-block text-success fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-cash-stack text-md me-1 align-middle"></i>10,000
+                                            </span>
+                                            <span class="d-md-block text-warning fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-coin text-md me-1 align-middle"></i>120,000
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card overflow-hidden position-relative h-100">
+                                <div class="d-flex d-md-block align-items-center">
+                                    <a href="#">
+                                        <img src="img/avatar/blocky.png" class="img-fluid item-preview d-none d-md-block p-3" />
+                                        <img src="img/avatar/blocky.png" class="img-fluid item-preview d-block d-md-none p-3" width="160" />
+                                    </a>
+                                    <div class="px-3 py-2 min-w-0">
+                                        <a href="#" class="text-xl fw-semibold text-light d-block truncate">sid fanfic shirt owo</a>
+                                        <div class="text-muted truncate text-sm mb-2">
+                                            Creator:
+                                            <a href="#" class="fw-semibold">Sid's Evil Lair</a>
+                                        </div>
+                                        <div class="text-md-center text-sm">
+                                            <span class="d-md-block text-success fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-cash-stack text-md me-1 align-middle"></i>10,000
+                                            </span>
+                                            <span class="d-md-block text-warning fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-coin text-md me-1 align-middle"></i>120,000
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card overflow-hidden position-relative h-100">
+                                <div class="d-flex d-md-block align-items-center">
+                                    <a href="#">
+                                        <img src="img/avatar/human.png" class="img-fluid item-preview d-none d-md-block p-3" />
+                                        <img src="img/avatar/human.png" class="img-fluid item-preview d-block d-md-none p-3" width="160" />
+                                    </a>
+                                    <div class="px-3 py-2 min-w-0">
+                                        <a href="#" class="text-xl fw-semibold text-light d-block truncate">sid fanfic shirt owo</a>
+                                        <div class="text-muted truncate text-sm mb-2">
+                                            Creator:
+                                            <a href="#" class="fw-semibold">Sid's Evil Lair</a>
+                                        </div>
+                                        <div class="text-md-center text-sm">
+                                            <span class="d-md-block text-success fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-cash-stack text-md me-1 align-middle"></i>10,000
+                                            </span>
+                                            <span class="d-md-block text-warning fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-coin text-md me-1 align-middle"></i>120,000
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card overflow-hidden position-relative h-100">
+                                <div class="d-flex d-md-block align-items-center">
+                                    <a href="#">
+                                        <img src="img/avatar/blocky.png" class="img-fluid item-preview d-none d-md-block p-3" />
+                                        <img src="img/avatar/blocky.png" class="img-fluid item-preview d-block d-md-none p-3" width="160" />
+                                    </a>
+                                    <div class="px-3 py-2 min-w-0">
+                                        <a href="#" class="text-xl fw-semibold text-light d-block truncate">sid fanfic shirt owo</a>
+                                        <div class="text-muted truncate text-sm mb-2">
+                                            Creator:
+                                            <a href="#" class="fw-semibold">Sid's Evil Lair</a>
+                                        </div>
+                                        <div class="text-md-center text-sm">
+                                            <span class="d-md-block text-success fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-cash-stack text-md me-1 align-middle"></i>10,000
+                                            </span>
+                                            <span class="d-md-block text-warning fw-semibold me-2 me-md-0">
+                                                <i class="bi bi-coin text-md me-1 align-middle"></i>120,000
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-@endsection
+</x-app-layout>
