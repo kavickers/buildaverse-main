@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('guilds_ranks', function (Blueprint $table) {
-            $table->id();
+            $table->id(); 
             $table->bigInteger('guild_id');
             $table->string('name');
             $table->integer('rank');

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('guild_id');
             $table->bigInteger('user_id');
             $table->integer('rank');
-            $table->timestamps();
+            $table->timestamps(); 
         });
     }
 
