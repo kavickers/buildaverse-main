@@ -168,6 +168,8 @@ Route::domain('dev.brixoro.com')->group(function () {
             Route::get('/communities/{guild}/edit', 'edit')->name('guilds.edit');
             Route::get('/communities/create', 'create')->name('guilds.create');
             Route::get('/communities', 'index')->name('guilds.index');
+
+            Route::post('/communities/create', 'create_post')->name('guilds.create.post');
         });
     });
 });
